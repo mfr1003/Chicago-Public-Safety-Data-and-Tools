@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CRE Intelligence Platform · MVP v0.1</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: #080C14; min-height: 100vh; }
+    #root { min-height: 100vh; }
+
+    .app {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 24px;
+      font-family: 'Syne', sans-serif;
+      color: #E8EAF0;
+    }
+
+    .header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 40px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      padding-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .logo-block .logo {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.25em;
+      color: #4FC3F7;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .logo-block h1 {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      color: #FFFFFF;
+    }
+
+    .logo-block .sub {
+      font-size: 13px;
+      color: rgba(255,255,255,0.35);
+      margin-top: 4px;
+      letter-spacing: 0.03em;
+    }
+
+    .status-pill {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      padding: 5px 12px;
+      border-radius: 20px;
+      background: rgba(79,195,247,0.1);
+      border: 1px solid rgba(79,195,247,0.25);
+      color: #4FC3F7;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .search-section {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 40px;
+    }
+
+    .addr-input {
+      flex: 1;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      padding: 14px 18px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 14px;
+      color: #E8EAF0;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      min-width: 0;
+    }
+
+    .addr-input:focus {
+      border-color: rgba(79,195,247,0.5);
+      box-shadow: 0 0 0 3px rgba(79,195,247,0.08);
+    }
+
+    .addr-input::placeholder { color: rgba(255,255,255,0.2); }
+
+    .run-btn {
+      padding: 14px 28px;
+      background: #4FC3F7;
+      color: #080C14;
+      border: none;
+      border-radius: 8px;
+      font-family: 'Syne', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .run-btn:hover { background: #81D4FA; }
+    .run-btn:active { transform: scale(0.98); }
+    .run-btn:disabled {
+      background: rgba(79,195,247,0.2);
+      color: rgba(79,195,247,0.4);
+      cursor: not-allowed;
+    }
+
+    .agents-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    @media (max-width: 768px) {
+      .agents-grid { grid-template-columns: 1fr; }
+      .search-section { flex-direction: column; }
+    }
+
+    .leg-full { grid-column: 1 / -1; }
+
+    .agent-card {
+      background: rgba(255,255,255,0.025);
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.07);
+      overflow: hidden;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    .agent-card.active {
+      border-color: var(--card-border);
+      box-shadow: 0 0 24px var(--card-glow);
+    }
+
+    .agent-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .agent-icon {
+      font-size: 18px;
+      color: var(--card-color);
+      min-width: 24px;
+      text-align: center;
+    }
+
+    .agent-name-block { flex: 1; min-width: 0; }
+
+    .agent-name {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: #FFFFFF;
+      line-height: 1.2;
+    }
+
+    .agent-subtitle {
+      font-size: 11px;
+      color: rgba(255,255,255,0.35);
+      letter-spacing: 0.06em;
+      margin-top: 2px;
+    }
+
+    .agent-status {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+
+    .status-idle { color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.04); }
+
+    .status-loading {
+      color: var(--card-color);
+      background: var(--card-glow);
+      animation: pulse 1.2s ease-in-out infinite;
+    }
+
+    .status-done { color: #66BB6A; background: rgba(102,187,106,0.12); }
+    .status-error { color: #FF7043; background: rgba(255,112,67,0.12); }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .agent-body {
+      padding: 12px 16px;
+      min-height: 80px;
+      max-height: 260px;
+      overflow-y: auto;
+    }
+
+    .agent-body::-webkit-scrollbar { width: 4px; }
+    .agent-body::-webkit-scrollbar-track { background: transparent; }
+    .agent-body::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,0.1);
+      border-radius: 2px;
+    }
+
+    .empty-state {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      color: rgba(255,255,255,0.15);
+      padding: 16px 0;
+      letter-spacing: 0.08em;
+    }
+
+    .count-badge {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      color: var(--card-color);
+      margin-bottom: 10px;
+      letter-spacing: 0.08em;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+    }
+
+    .data-table th {
+      text-align: left;
+      padding: 4px 8px 6px 0;
+      color: rgba(255,255,255,0.3);
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      font-size: 10px;
+      text-transform: uppercase;
+    }
+
+    .data-table td {
+      padding: 5px 8px 5px 0;
+      color: rgba(255,255,255,0.75);
+      border-bottom: 1px solid rgba(255,255,255,0.03);
+      max-width: 160px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 11px;
+      vertical-align: top;
+    }
+
+    .data-table tr:last-child td { border-bottom: none; }
+
+    .error-msg {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      color: #FF7043;
+      padding: 8px 0;
+      line-height: 1.6;
+    }
+
+    .leg-section { margin-bottom: 14px; }
+
+    .leg-label {
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(206,147,216,0.6);
+      margin-bottom: 6px;
+    }
+
+    .leg-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+    }
+
+    .leg-row:last-child { border-bottom: none; }
+
+    .leg-juris {
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .juris-Federal { background: rgba(79,195,247,0.15); color: #4FC3F7; }
+    .juris-Illinois { background: rgba(102,187,106,0.15); color: #66BB6A; }
+    .juris-Chicago { background: rgba(206,147,216,0.15); color: #CE93D8; }
+
+    .leg-content { flex: 1; min-width: 0; }
+
+    .leg-body-text {
+      color: rgba(255,255,255,0.4);
+      font-size: 10px;
+      margin-top: 2px;
+    }
+
+    .orchestrator-section {
+      background: rgba(79,195,247,0.04);
+      border: 1px solid rgba(79,195,247,0.15);
+      border-radius: 12px;
+      padding: 24px;
+      margin-top: 8px;
+    }
+
+    .orch-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .orch-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(79,195,247,0.12);
+      border: 1px solid rgba(79,195,247,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      color: #4FC3F7;
+      flex-shrink: 0;
+    }
+
+    .orch-title-block { flex: 1; }
+    .orch-title { font-size: 15px; font-weight: 700; color: #FFFFFF; }
+    .orch-sub { font-size: 11px; color: rgba(255,255,255,0.35); margin-top: 2px; }
+
+    .orch-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    @media (max-width: 600px) {
+      .orch-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    .impl-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
+    }
+
+    .impl-name {
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+      margin-bottom: 8px;
+      line-height: 1.3;
+    }
+
+    .impl-score {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 28px;
+      font-weight: 500;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .impl-denom {
+      font-size: 14px;
+      opacity: 0.4;
+    }
+
+    .impl-bar {
+      height: 3px;
+      background: rgba(255,255,255,0.07);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .impl-fill {
+      height: 100%;
+      border-radius: 2px;
+      transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .posture-block {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 14px 16px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.07);
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .posture-label {
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.3);
+      margin-bottom: 2px;
+    }
+
+    .posture-value {
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .posture-AGGRESSIVE { color: #FF7043; }
+    .posture-FAIR { color: #4FC3F7; }
+    .posture-GENEROUS { color: #66BB6A; }
+
+    .posture-divider {
+      width: 1px;
+      height: 36px;
+      background: rgba(255,255,255,0.08);
+      margin: 0 4px;
+      flex-shrink: 0;
+    }
+
+    .posture-note {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      color: rgba(255,255,255,0.4);
+      line-height: 1.5;
+    }
+
+    .posture-note span { color: rgba(79,195,247,0.6); }
+
+    .thesis-block {
+      font-size: 14px;
+      line-height: 1.7;
+      color: rgba(255,255,255,0.7);
+      padding: 14px 16px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 8px;
+      border-left: 3px solid #4FC3F7;
+    }
+
+    .orch-pending {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      color: rgba(255,255,255,0.2);
+      text-align: center;
+      padding: 24px 0;
+      letter-spacing: 0.08em;
+    }
+
+    .footer-note {
+      margin-top: 24px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      color: rgba(255,255,255,0.15);
+      letter-spacing: 0.08em;
+      text-align: center;
+      line-height: 1.8;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useCallback } = React;
+
+    // ── CONSTANTS ────────────────────────────────────────────────────────────
+    const CHICAGO   = "https://data.cityofchicago.org/resource";
+    const COOKCOUNTY = "https://datacatalog.cookcountyil.gov/resource";
+
+    // ── ADDRESS UTILS ────────────────────────────────────────────────────────
+    function parseAddr(raw) {
+      const norm = raw.toUpperCase()
+        .replace(/\bNORTH\b/g,"N").replace(/\bSOUTH\b/g,"S")
+        .replace(/\bEAST\b/g,"E").replace(/\bWEST\b/g,"W")
+        .replace(/\bSTREET\b/g,"ST").replace(/\bAVENUE\b/g,"AVE")
+        .replace(/\bBOULEVARD\b/g,"BLVD").replace(/\bDRIVE\b/g,"DR")
+        .replace(/,.*$/,"").trim();
+      const m = norm.match(/^(\d+)\s+([NSEW])?\s*(.+)$/);
+      if (!m) return { number:"", direction:"", street:norm };
+      return { number:m[1], direction:m[2]||"", street:m[3].trim() };
+    }
+
+    // ── AGENT FETCHERS ───────────────────────────────────────────────────────
+    async function fetchAssessor(addr) {
+      const { number } = parseAddr(addr);
+      const url = `${COOKCOUNTY}/tx2p-k2g9.json?$where=upper(property_address) like upper('%25${number}%25')&$limit=10`;
+      const r = await fetch(url);
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      const data = await r.json();
+      return data.map(d => ({
+        pin:      d.pin || "–",
+        address:  d.property_address || "–",
+        class:    d.class || "–",
+        assessed: d.certified_tot  ? "$"+Number(d.certified_tot).toLocaleString()  : "–",
+        land:     d.certified_land ? "$"+Number(d.certified_land).toLocaleString() : "–",
+        building: d.certified_bldg ? "$"+Number(d.certified_bldg).toLocaleString() : "–",
+        tax_year: d.tax_year || "–"
+      }));
+    }
+
+    async function fetchViolations(addr) {
+      const { number, direction } = parseAddr(addr);
+      const dirClause = direction ? ` AND upper(address) like upper('%25${direction}%25')` : "";
+      const url = `${CHICAGO}/22u3-xenr.json?$where=upper(address) like upper('%25${number}%25')${dirClause}&$limit=50&$order=violation_date DESC`;
+      const r = await fetch(url);
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      const data = await r.json();
+      return data.map(d => ({
+        date:      (d.violation_date||"–").slice(0,10),
+        address:   d.address || "–",
+        violation: (d.violation_description||"–").slice(0,80),
+        status:    d.violation_status || "–",
+        inspector: d.inspector_id || "–"
+      }));
+    }
+
+    async function fetchPermits(addr) {
+      const { number, direction } = parseAddr(addr);
+      const dirClause = direction ? `AND street_direction='${direction}'` : "";
+      const url = `${CHICAGO}/ydr8-5enu.json?$where=street_number='${number}' ${dirClause}&$limit=50&$order=issue_date DESC`;
+      const r = await fetch(url);
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      const data = await r.json();
+      return data.map(d => ({
+        date:        (d.issue_date||"–").slice(0,10),
+        type:        d.permit_type || "–",
+        description: (d.work_description||"–").slice(0,90),
+        cost:        d.estimated_cost ? "$"+Number(d.estimated_cost).toLocaleString() : "–",
+        status:      d.permit_status || "–"
+      }));
+    }
+
+    async function fetch311(addr) {
+      const { number } = parseAddr(addr);
+      const url = `${CHICAGO}/v6vf-nfxy.json?$where=upper(street_address) like upper('%25${number}%25')&$limit=50&$order=created_date DESC`;
+      const r = await fetch(url);
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      const data = await r.json();
+      return data.map(d => ({
+        date:    (d.created_date||"–").slice(0,10),
+        type:    d.sr_type || d.service_request_type || "–",
+        status:  d.status || "–",
+        address: d.street_address || "–",
+        ward:    d.ward || "–"
+      }));
+    }
+
+    async function fetchLegislative(addr) {
+      const { number } = parseAddr(addr);
+      let cityActions = [];
+      try {
+        const url = `${CHICAGO}/yhhz-zm2v.json?$where=upper(address) like upper('%25${number}%25')&$limit=20`;
+        const r = await fetch(url);
+        if (r.ok) {
+          const data = await r.json();
+          cityActions = data.slice(0,8).map(d => ({
+            date:   (d.date||"–").slice(0,10),
+            action: d.action || d.action_type || "–",
+            ward:   d.ward || "–"
+          }));
+        }
+      } catch(e) { /* non-fatal */ }
+
+      return {
+        city_council_actions: cityActions,
+        monitored_committees: [
+          { jurisdiction:"Federal",  body:"House Financial Services Committee", status:"Active — HUD Oversight Subcommittee monitoring" },
+          { jurisdiction:"Federal",  body:"Senate Banking Committee",            status:"Active — Housing, Transportation & Community Dev." },
+          { jurisdiction:"Illinois", body:"Senate Housing Committee",            status:"Session active — SB 1234, SB 2156 in committee" },
+          { jurisdiction:"Chicago",  body:"City Council Housing Committee",      status:"Active — Aldermanic records indexed by ward" }
+        ]
+      };
+    }
+
+    // ── AGENT DEFINITIONS ────────────────────────────────────────────────────
+    const AGENTS = [
+      {
+        id:"assessor", name:"Financial Agent", subtitle:"Cook County Assessor",
+        color:"#4FC3F7", glow:"rgba(79,195,247,0.15)", border:"rgba(79,195,247,0.3)",
+        icon:"◈", fetch:fetchAssessor,
+        columns:["pin","address","class","assessed","land","building","tax_year"],
+        labels: ["PIN","Address","Class","Assessed","Land","Building","Tax Yr"]
+      },
+      {
+        id:"violations", name:"Distress Agent", subtitle:"Building Code Violations",
+        color:"#FF7043", glow:"rgba(255,112,67,0.15)", border:"rgba(255,112,67,0.3)",
+        icon:"⚑", fetch:fetchViolations,
+        columns:["date","address","violation","status","inspector"],
+        labels: ["Date","Address","Violation","Status","Inspector"]
+      },
+      {
+        id:"permits", name:"Physical Asset Agent", subtitle:"Building Permits",
+        color:"#66BB6A", glow:"rgba(102,187,106,0.15)", border:"rgba(102,187,106,0.3)",
+        icon:"⬡", fetch:fetchPermits,
+        columns:["date","type","description","cost","status"],
+        labels: ["Date","Type","Description","Cost","Status"]
+      },
+      {
+        id:"complaints", name:"Distress Agent", subtitle:"311 Service Requests",
+        color:"#FFA726", glow:"rgba(255,167,38,0.15)", border:"rgba(255,167,38,0.3)",
+        icon:"◉", fetch:fetch311,
+        columns:["date","type","status","address","ward"],
+        labels: ["Date","Request Type","Status","Address","Ward"]
+      },
+      {
+        id:"legislative", name:"Legislative Agent", subtitle:"Active Legislation",
+        color:"#CE93D8", glow:"rgba(206,147,216,0.15)", border:"rgba(206,147,216,0.3)",
+        icon:"⚖", fetch:fetchLegislative, isSpecial:true
+      }
+    ];
+
+    // ── SCORING UTILS ────────────────────────────────────────────────────────
+    function scoreColor(n) {
+      if (n <= 3) return "#66BB6A";
+      if (n <= 6) return "#FFA726";
+      return "#FF7043";
+    }
+
+    function computeOrchestrator(states) {
+      const violations  = states.violations?.data  || [];
+      const permits     = states.permits?.data     || [];
+      const complaints  = states.complaints?.data  || [];
+      const assessor    = states.assessor?.data    || [];
+
+      const pestCount = complaints.filter(c =>
+        /pest|rodent|sanit/i.test(c.type||"")
+      ).length;
+
+      const violCount = violations.length;
+      const twoyrsAgo = new Date(Date.now() - 2*365*24*60*60*1000).toISOString().slice(0,10);
+      const recentPermits = permits.filter(p => p.date && p.date > twoyrsAgo).length;
+
+      const sellerMotivation = Math.min(10, Math.max(1, Math.round(
+        1 +
+        (violCount > 5 ? 4 : violCount > 2 ? 2 : 0) +
+        (pestCount  > 2 ? 3 : pestCount  > 0 ? 1 : 0) +
+        (recentPermits === 0 && violCount > 0 ? 2 : 0)
+      )));
+
+      const incomeReliability = Math.min(10, Math.max(1, Math.round(
+        10 -
+        (violCount       > 3 ? 2 : 0) -
+        (complaints.length > 5 ? 2 : complaints.length > 2 ? 1 : 0) +
+        (recentPermits   > 3 ? 1 : 0)
+      )));
+
+      const valueAdd = Math.min(10, Math.max(1, Math.round(
+        5 +
+        (violCount > 0 && recentPermits === 0 ? 2 : 0) +
+        (assessor.length > 0 ? 1 : 0) -
+        (pestCount > 3 ? 2 : 0)
+      )));
+
+      const regulatoryExposure = Math.min(10, Math.max(1, Math.round(
+        3 +
+        (violations.some(v => /tenant|heat/i.test(v.violation||"")) ? 3 : 0) +
+        (complaints.some(c => /heat|landlord/i.test(c.type||""))    ? 2 : 0)
+      )));
+
+      const assetTrajectory = Math.min(10, Math.max(1, Math.round(
+        5 +
+        (recentPermits > 2 ? 2 : recentPermits > 0 ? 1 : -1) -
+        (violCount > 5 ? 2 : violCount > 2 ? 1 : 0)
+      )));
+
+      const leverage = Math.min(10, Math.max(1, Math.round(
+        (sellerMotivation + (10 - incomeReliability) + regulatoryExposure) / 3
+      )));
+
+      let posture = "FAIR";
+      if (sellerMotivation >= 7 && leverage >= 6) posture = "AGGRESSIVE";
+      else if (incomeReliability >= 8 && assetTrajectory >= 7) posture = "GENEROUS";
+
+      const parts = [];
+      if (violCount > 3)        parts.push(`${violCount} open violations indicate deferred maintenance`);
+      if (pestCount > 0)        parts.push(`${pestCount} pest-related 311 complaint${pestCount>1?"s":""} on record`);
+      if (recentPermits === 0 && violCount > 0)
+                                parts.push("no recent permit activity despite known violations signals landlord disengagement");
+      if (recentPermits > 2)    parts.push(`${recentPermits} recent permits suggest active capital investment`);
+      if (parts.length === 0)   parts.push("limited distress signals detected across available public records");
+
+      const thesis =
+        `Based on available public data: ${parts.join("; ")}. ` +
+        `Seller motivation scores ${sellerMotivation}/10 with negotiating leverage at ${leverage}/10. ` +
+        `Recommended posture is ${posture}. ` +
+        `Note: rent roll and tenant length-of-stay require licensed data layer (Phase 2).`;
+
+      return {
+        scores:{ sellerMotivation, incomeReliability, valueAdd, regulatoryExposure, assetTrajectory, leverage },
+        posture, thesis
+      };
+    }
+
+    // ── COMPONENTS ───────────────────────────────────────────────────────────
+    function DataTable({ agent, data }) {
+      if (!data || data.length === 0)
+        return <div className="empty-state">NO RECORDS FOUND IN PUBLIC DATABASE</div>;
+      return (
+        <>
+          <div className="count-badge">
+            {data.length} RECORD{data.length !== 1 ? "S" : ""} RETRIEVED
+          </div>
+          <table className="data-table">
+            <thead>
+              <tr>{agent.labels.map((l,i) => <th key={i}>{l}</th>)}</tr>
+            </thead>
+            <tbody>
+              {data.slice(0,8).map((row,i) => (
+                <tr key={i}>
+                  {agent.columns.map((col,j) => (
+                    <td key={j} title={row[col]}>{row[col]}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {data.length > 8 && (
+            <div style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:10,
+              color:"rgba(255,255,255,0.2)",marginTop:8,letterSpacing:"0.08em"}}>
+              +{data.length - 8} MORE RECORDS
+            </div>
+          )}
+        </>
+      );
+    }
+
+    function LegislativeView({ data }) {
+      if (!data) return <div className="empty-state">NO DATA</div>;
+      const jurisClass = j => "juris-" + j.replace(/\s/g,"");
+      return (
+        <>
+          {data.city_council_actions?.length > 0 && (
+            <div className="leg-section">
+              <div className="leg-label">City Council Actions at Address</div>
+              {data.city_council_actions.map((a,i) => (
+                <div className="leg-row" key={i}>
+                  <span className={"leg-juris juris-Chicago"}>CHI</span>
+                  <div className="leg-content">
+                    <div style={{color:"rgba(255,255,255,0.75)",fontSize:11}}>{a.action}</div>
+                    <div className="leg-body-text">{a.date} · Ward {a.ward}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+          <div className="leg-section">
+            <div className="leg-label">Monitored Committees</div>
+            {data.monitored_committees.map((c,i) => (
+              <div className="leg-row" key={i}>
+                <span className={"leg-juris "+jurisClass(c.jurisdiction)}>
+                  {c.jurisdiction.slice(0,3).toUpperCase()}
+                </span>
+                <div className="leg-content">
+                  <div style={{color:"rgba(255,255,255,0.75)",fontSize:11}}>{c.body}</div>
+                  <div className="leg-body-text">{c.status}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
+      );
+    }
+
+    function AgentCard({ agent, state }) {
+      const status = state?.status || "idle";
+      const data   = state?.data;
+      const error  = state?.error;
+
+      const statusLabels = { idle:"STANDBY", loading:"SCANNING", done:"COMPLETE", error:"ERROR" };
+
+      return (
+        <div
+          className={"agent-card " + (status !== "idle" ? "active" : "")}
+          style={{"--card-color":agent.color,"--card-glow":agent.glow,"--card-border":agent.border}}
+        >
+          <div className="agent-header">
+            <span className="agent-icon">{agent.icon}</span>
+            <div className="agent-name-block">
+              <div className="agent-name">{agent.name}</div>
+              <div className="agent-subtitle">{agent.subtitle}</div>
+            </div>
+            <span className={"agent-status status-"+status}>
+              {statusLabels[status] || "STANDBY"}
+            </span>
+          </div>
+          <div className="agent-body">
+            {status === "idle"    && <div className="empty-state">— AWAITING ADDRESS INPUT —</div>}
+            {status === "loading" && <div className="empty-state" style={{color:agent.color}}>RETRIEVING DATA...</div>}
+            {status === "error"   && <div className="error-msg">⚠ {error}<br/><span style={{opacity:0.6,fontSize:10}}>May be a CORS restriction — proxy layer resolves this in production.</span></div>}
+            {status === "done" && !agent.isSpecial && <DataTable agent={agent} data={data} />}
+            {status === "done" &&  agent.isSpecial && <LegislativeView data={data} />}
+          </div>
+        </div>
+      );
+    }
+
+    function OrchestratorPanel({ states, allDone }) {
+      if (!allDone) return (
+        <div className="orchestrator-section">
+          <div className="orch-header">
+            <div className="orch-icon">◆</div>
+            <div className="orch-title-block">
+              <div className="orch-title">Orchestrator</div>
+              <div className="orch-sub">Awaiting agent briefings</div>
+            </div>
+          </div>
+          <div className="orch-pending">— STANDING BY — BRIEFING PACKAGE INCOMPLETE —</div>
+        </div>
+      );
+
+      const { scores, posture, thesis } = computeOrchestrator(states);
+
+      const implItems = [
+        { name:"Seller Motivation",   score:scores.sellerMotivation  },
+        { name:"Income Reliability",  score:scores.incomeReliability },
+        { name:"Value-Add Potential", score:scores.valueAdd          },
+        { name:"Regulatory Exposure", score:scores.regulatoryExposure},
+        { name:"Asset Trajectory",    score:scores.assetTrajectory   },
+        { name:"Negotiating Leverage",score:scores.leverage          }
+      ];
+
+      return (
+        <div className="orchestrator-section">
+          <div className="orch-header">
+            <div className="orch-icon">◆</div>
+            <div className="orch-title-block">
+              <div className="orch-title">Orchestrator</div>
+              <div className="orch-sub">Full briefing received — rendering judgment</div>
+            </div>
+            <span className="status-pill">BRIEFING COMPLETE</span>
+          </div>
+
+          <div className="orch-grid">
+            {implItems.map((item,i) => (
+              <div className="impl-card" key={i}>
+                <div className="impl-name">{item.name}</div>
+                <div className="impl-score" style={{color:scoreColor(item.score)}}>
+                  {item.score}<span className="impl-denom">/10</span>
+                </div>
+                <div className="impl-bar">
+                  <div className="impl-fill"
+                    style={{width:`${item.score*10}%`, background:scoreColor(item.score)}}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="posture-block">
+            <div>
+              <div className="posture-label">Recommended Posture</div>
+              <div className={"posture-value posture-"+posture}>{posture}</div>
+            </div>
+            <div className="posture-divider" />
+            <div className="posture-note">
+              Heuristic model · v0.1<br/>
+              <span>Claude API orchestration — Phase 2</span>
+            </div>
+          </div>
+
+          <div className="thesis-block">{thesis}</div>
+        </div>
+      );
+    }
+
+    // ── MAIN APP ─────────────────────────────────────────────────────────────
+    function App() {
+      const [address, setAddress] = useState("2835 N Sheffield Ave, Chicago, IL");
+      const [states, setStates]   = useState({});
+      const [running, setRunning] = useState(false);
+
+      const update = useCallback((id, patch) => {
+        setStates(prev => ({ ...prev, [id]: { ...(prev[id]||{}), ...patch } }));
+      }, []);
+
+      const run = useCallback(async () => {
+        if (!address.trim() || running) return;
+        setRunning(true);
+        const reset = {};
+        AGENTS.forEach(a => { reset[a.id] = { status:"idle", data:null, error:null }; });
+        setStates(reset);
+        await new Promise(r => setTimeout(r, 150));
+
+        await Promise.allSettled(AGENTS.map(async agent => {
+          update(agent.id, { status:"loading" });
+          try {
+            const data = await agent.fetch(address);
+            update(agent.id, { status:"done", data });
+          } catch(err) {
+            update(agent.id, { status:"error", error: err.message || "Fetch failed" });
+          }
+        }));
+
+        setRunning(false);
+      }, [address, running, update]);
+
+      const allDone = AGENTS.length > 0 &&
+        Object.keys(states).length === AGENTS.length &&
+        AGENTS.every(a => states[a.id]?.status === "done" || states[a.id]?.status === "error");
+
+      const statusLabel = running ? "SCANNING" : allDone ? "BRIEFING READY" : "STANDBY";
+
+      return (
+        <div className="app">
+          <div className="header">
+            <div className="logo-block">
+              <div className="logo">Intelligence Platform · MVP v0.1</div>
+              <h1>CRE Research Engine</h1>
+              <div className="sub">Chicago Multifamily · Multi-Agent Pipeline · Public Data Layer</div>
+            </div>
+            <span className="status-pill">{statusLabel}</span>
+          </div>
+
+          <div className="search-section">
+            <input
+              className="addr-input"
+              value={address}
+              onChange={e => setAddress(e.target.value)}
+              onKeyDown={e => e.key === "Enter" && run()}
+              placeholder="Enter Chicago property address..."
+            />
+            <button className="run-btn" onClick={run} disabled={running}>
+              {running ? "SCANNING..." : "RUN ANALYSIS"}
+            </button>
+          </div>
+
+          <div className="agents-grid">
+            {AGENTS.slice(0,4).map(agent => (
+              <AgentCard key={agent.id} agent={agent} state={states[agent.id]} />
+            ))}
+            <div className="leg-full">
+              <AgentCard agent={AGENTS[4]} state={states[AGENTS[4].id]} />
+            </div>
+          </div>
+
+          <OrchestratorPanel states={states} allDone={allDone} />
+
+          <div className="footer-note">
+            DATA SOURCES: CHICAGO DATA PORTAL · COOK COUNTY ASSESSOR · CHICAGO CITY CLERK<br />
+            RAW DATA IS UNINTERPRETED UNTIL ORCHESTRATOR RECEIVES FULL BRIEFING PACKAGE<br />
+            PHASE 2: CLAUDE API ORCHESTRATION · LICENSED DATA LAYER (NCOA, ATTOM) · ILLINOIS LEGISLATIVE FEED
+          </div>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+  </script>
+</body>
+</html>
