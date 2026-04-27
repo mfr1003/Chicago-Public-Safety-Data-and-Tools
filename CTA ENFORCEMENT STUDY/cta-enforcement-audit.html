@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>CTA Transit Enforcement Audit · PolicyTorque</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:#F4F6F9;font-family:system-ui,-apple-system,sans-serif;color:#1C2B3A}
+button{font-family:inherit;cursor:pointer}
+.header{background:#fff;border-bottom:1px solid #DDE3EC;padding:24px 32px 20px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.eyebrow{font-size:10px;color:#C8801E;letter-spacing:3px;text-transform:uppercase;font-weight:600;margin-bottom:8px}
+.title{font-size:22px;font-weight:700;color:#1C2B3A;margin-bottom:8px}
+.subtitle{font-size:12px;color:#5A6A7A;max-width:720px;line-height:1.75}
+.subtitle .alert{color:#B03030;font-weight:600}
+.tabs{display:flex;background:#fff;border-bottom:1px solid #DDE3EC;padding:0 32px;overflow-x:auto;gap:0}
+.tab{background:none;border:none;padding:13px 16px 11px;font-size:11px;letter-spacing:1px;text-transform:uppercase;font-weight:600;color:#8E9EAE;border-bottom:2px solid transparent;white-space:nowrap;transition:color .15s}
+.tab.active{color:#2860A0;border-bottom-color:#2860A0}
+.content{padding:28px 32px 60px;display:none}
+.content.active{display:block}
+
+/* stat cards */
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:28px}
+.cards-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:28px}
+.cards-2{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:28px}
+.card{background:#fff;border:1px solid #DDE3EC;border-radius:8px;padding:18px 20px;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+.card-label{font-size:10px;color:#8E9EAE;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
+.card-value{font-size:26px;font-weight:700;margin-bottom:4px}
+.card-sub{font-size:11px;color:#5A6A7A;line-height:1.5}
+
+/* ROI banner */
+.roi-banner{background:#1C2B3A;border-radius:8px;padding:24px 28px;margin-bottom:28px;display:grid;grid-template-columns:auto 1px 1fr;gap:0;align-items:center;overflow:hidden}
+.roi-left{padding-right:28px;display:flex;flex-direction:column;gap:4px}
+.roi-ratio{font-size:48px;font-weight:700;color:#E8C880;line-height:1;letter-spacing:-1px}
+.roi-ratio-sub{font-size:10px;color:#6A8AAA;letter-spacing:2px;text-transform:uppercase;font-weight:600}
+.roi-divider{background:#2E3F50;width:1px;align-self:stretch}
+.roi-right{padding-left:28px;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.roi-stat{display:flex;flex-direction:column;gap:3px}
+.roi-stat-val{font-size:22px;font-weight:700;line-height:1}
+.roi-stat-lbl{font-size:10px;color:#6A8AAA;letter-spacing:1.5px;text-transform:uppercase}
+
+/* section headers */
+.section-label{font-size:11px;color:#8E9EAE;letter-spacing:2px;text-transform:uppercase;margin-bottom:12px}
+.section-label.mt{margin-top:24px}
+
+/* charts */
+.chart-box{background:#fff;border:1px solid #DDE3EC;border-radius:8px;padding:20px 16px;box-shadow:0 1px 4px rgba(0,0,0,.04);margin-bottom:0}
+.chart-box canvas{max-height:300px}
+
+/* findings */
+.finding{margin-top:20px;background:#fff;border:1px solid #DDE3EC;border-radius:0 8px 8px 0;padding:16px 20px;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.finding-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;font-weight:700;margin-bottom:8px}
+.finding-text{font-size:12px;color:#5A6A7A;line-height:1.85}
+
+/* disposition table */
+.disp-table{width:100%;border-collapse:collapse;background:#fff;border-radius:8px;overflow:hidden;border:1px solid #DDE3EC;box-shadow:0 1px 4px rgba(0,0,0,.04);margin-bottom:0}
+.disp-table th{background:#F8FAFC;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#8E9EAE;font-weight:600;padding:12px 16px;text-align:left;border-bottom:1px solid #DDE3EC}
+.disp-table td{padding:11px 16px;font-size:12px;border-bottom:1px solid #F0F2F5;color:#1C2B3A}
+.disp-table tr:last-child td{border-bottom:none}
+.disp-table tr:hover td{background:#F8FAFC}
+.disp-table .num{text-align:right;font-weight:600}
+.disp-table .fine{text-align:right;color:#2860A0;font-weight:600}
+.disp-highlight td{background:#FFF8EE!important}
+
+/* contract cards */
+.contract-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:28px}
+.contract-card{background:#fff;border:1px solid #DDE3EC;border-radius:8px;padding:18px 20px;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+.contract-vendor{font-size:13px;font-weight:700;color:#1C2B3A;margin-bottom:2px}
+.contract-id{font-size:10px;color:#8E9EAE;letter-spacing:1px;margin-bottom:10px}
+.contract-amount{font-size:24px;font-weight:700;margin-bottom:4px}
+.contract-meta{font-size:11px;color:#5A6A7A;line-height:1.55}
+
+/* anomaly box */
+.anomaly-box{background:#FFF0F0;border:1px solid #E8BEBE;border-left:4px solid #B03030;border-radius:0 8px 8px 0;padding:18px 22px;margin-bottom:20px}
+.anomaly-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;font-weight:700;color:#B03030;margin-bottom:8px}
+.anomaly-text{font-size:12px;color:#5A2020;line-height:1.85}
+
+/* FOIA */
+.foia-banner{background:#FFF8EE;border:1px solid #C8801E;border-left:4px solid #C8801E;border-radius:0 8px 8px 0;padding:16px 20px;margin-bottom:24px}
+.foia-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.foia-card{background:#fff;border:1px solid #DDE3EC;border-radius:8px;padding:16px 18px;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.foia-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;gap:8px}
+.foia-agency{font-size:13px;font-weight:700}
+.foia-badges{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end;flex-shrink:0}
+.badge{font-size:8px;font-weight:700;letter-spacing:1px;padding:3px 8px;border-radius:4px;white-space:nowrap}
+.badge-consult{color:#C8801E;background:#FFF3DC;border:1px solid #C8801E}
+.badge-produced{color:#2A7A2A;background:#F0FFF0;border:1px solid #2A7A2A}
+.foia-ref{font-size:10px;color:#8E9EAE;letter-spacing:1px;margin-bottom:2px}
+.foia-contact{font-size:10px;color:#8E9EAE;margin-bottom:8px}
+.foia-detail{font-size:11px;color:#5A6A7A;line-height:1.65}
+
+/* mini bar */
+.bar-mini{display:flex;gap:4px;align-items:flex-end;height:90px;margin-top:8px}
+.bar-mini-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px}
+.bar-mini-val{font-size:8px;font-weight:600;color:#C8801E}
+.bar-mini-bar{width:100%;border-radius:2px 2px 0 0;min-height:4px}
+.bar-mini-yr{font-size:8px;color:#8E9EAE}
+
+.footer{border-top:1px solid #DDE3EC;padding:16px 32px;background:#fff;font-size:10px;color:#8E9EAE}
+
+@media(max-width:900px){
+  .roi-banner{grid-template-columns:1fr}
+  .roi-divider{display:none}
+  .roi-right{grid-template-columns:1fr 1fr;padding-left:0;padding-top:16px}
+  .contract-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:700px){
+  .cards,.cards-3,.cards-2,.foia-grid,.contract-grid{grid-template-columns:1fr 1fr}
+  .header,.tabs,.content{padding-left:16px;padding-right:16px}
+}
+@media(max-width:480px){
+  .cards,.cards-3,.cards-2{grid-template-columns:1fr 1fr}
+  .foia-grid,.contract-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="eyebrow">Active Investigation · PolicyTorque · Apr 24, 2026 · 14 FOIAs Filed</div>
+  <div class="title">CTA Transit Enforcement Audit</div>
+  <div class="subtitle">
+    CPD Transit Unit citation and arrest data (2018–2025), DOAH adjudication records (11,043 cases), and CTA procurement records ($268M in private security contracts). Three of five original FOIA respondents invoked identical consultation extensions within eight days of each other.
+    <span class="alert"> Monterrey Security terminated April 18, 2026 — three weeks after contract renewal.</span>
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="showTab(0)">Overview</button>
+  <button class="tab" onclick="showTab(1)">Violations</button>
+  <button class="tab" onclick="showTab(2)">Arrests</button>
+  <button class="tab" onclick="showTab(3)">Fare Evasion</button>
+  <button class="tab" onclick="showTab(4)">Adjudication</button>
+  <button class="tab" onclick="showTab(5)">Contracts</button>
+  <button class="tab" onclick="showTab(6)">FOIA Status</button>
+</div>
+
+<!-- TAB 0: OVERVIEW -->
+<div class="content active" id="tab0">
+  <div class="roi-banner">
+    <div class="roi-left">
+      <div class="roi-ratio">&lt;1%</div>
+      <div class="roi-ratio-sub">Enforcement ROI</div>
+    </div>
+    <div class="roi-divider"></div>
+    <div class="roi-right">
+      <div class="roi-stat">
+        <div class="roi-stat-val" style="color:#E87070">$268M</div>
+        <div class="roi-stat-lbl">Private security contracts</div>
+      </div>
+      <div class="roi-stat">
+        <div class="roi-stat-val" style="color:#E8C880">$2.67M</div>
+        <div class="roi-stat-lbl">Total fines assessed · DOAH</div>
+      </div>
+      <div class="roi-stat">
+        <div class="roi-stat-val" style="color:#A0C8A0">11,043</div>
+        <div class="roi-stat-lbl">Adjudicated fare evasion cases</div>
+      </div>
+      <div class="roi-stat">
+        <div class="roi-stat-val" style="color:#E87070">65%</div>
+        <div class="roi-stat-lbl">Default judgments · no-shows</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cards">
+    <div class="card" style="border-top:3px solid #C8801E">
+      <div class="card-label">Peak Year ANOVs</div>
+      <div class="card-value" style="color:#C8801E">18,040</div>
+      <div class="card-sub">2025 — all-time high</div>
+    </div>
+    <div class="card" style="border-top:3px solid #8E9EAE">
+      <div class="card-label">Baseline ANOVs</div>
+      <div class="card-value" style="color:#8E9EAE">4,189</div>
+      <div class="card-sub">2022 — pre-surge</div>
+    </div>
+    <div class="card" style="border-top:3px solid #B03030">
+      <div class="card-label">ANOV Increase 2022→2025</div>
+      <div class="card-value" style="color:#B03030">+331%</div>
+      <div class="card-sub">in three years</div>
+    </div>
+    <div class="card" style="border-top:3px solid #B03030">
+      <div class="card-label">Board Auth. Overspend</div>
+      <div class="card-value" style="color:#B03030">$26M</div>
+      <div class="card-sub">Retroactively approved Oct 2024</div>
+    </div>
+  </div>
+
+  <div class="section-label">Total ANOVs by Year</div>
+  <div class="chart-box"><canvas id="chart0"></canvas></div>
+  <div class="finding" style="border-left-color:#C8801E">
+    <div class="finding-label" style="color:#C8801E">The Core Finding</div>
+    <div class="finding-text">The CTA spent approximately $268 million on private security contracts while the Department of Administrative Hearings produced $2,669,348 in total fare evasion fines — less than one percent of contract cost. 65% of that fine revenue came from automatic $300 default judgments against defendants who did not appear. Of the cases actually contested, the city failed to establish a prima facie case in 1,092 instances. The enforcement system's primary output is not fare compliance or revenue — it is default judgments against people who cannot navigate an administrative hearing process.</div>
+  </div>
+</div>
+
+<!-- TAB 1: VIOLATIONS -->
+<div class="content" id="tab1">
+  <div class="section-label">ANOVs by Violation Category — 2018 to 2025</div>
+  <div class="chart-box"><canvas id="chart1"></canvas></div>
+  <div class="finding" style="border-left-color:#2860A0">
+    <div class="finding-label" style="color:#2860A0">Key Finding</div>
+    <div class="finding-text">Smoking is the single largest enforcement category in every year on record. In 2025: 4,364 smoking citations versus 2,475 fare evasion citations. Fare evasion has consistently represented 8–14% of total ANOVs. If the fiscal argument for the $268M private security apparatus is fare revenue recovery, the citation composition does not support it — and the DOAH adjudication data now confirms the revenue was $2.67M.</div>
+  </div>
+</div>
+
+<!-- TAB 2: ARRESTS -->
+<div class="content" id="tab2">
+  <div class="cards-3">
+    <div class="card" style="border-top:3px solid #8E9EAE">
+      <div class="card-label">2022 Arrests</div>
+      <div class="card-value" style="color:#8E9EAE">410</div>
+      <div class="card-sub">pre-surge baseline</div>
+    </div>
+    <div class="card" style="border-top:3px solid #B03030">
+      <div class="card-label">2024 Arrests</div>
+      <div class="card-value" style="color:#B03030">1,820</div>
+      <div class="card-sub">peak — +344% vs 2022</div>
+    </div>
+    <div class="card" style="border-top:3px solid #B03030">
+      <div class="card-label">"Other" Share, 2024</div>
+      <div class="card-value" style="color:#B03030">77%</div>
+      <div class="card-sub">of all arrests — undefined category</div>
+    </div>
+  </div>
+  <div class="section-label">Arrests by Charge Category</div>
+  <div class="chart-box"><canvas id="chart2"></canvas></div>
+  <div class="finding" style="border-left-color:#B03030">
+    <div class="finding-label" style="color:#B03030">Critical Anomaly — Confirmed by DOAH Data</div>
+    <div class="finding-text">The "Other" arrest category — undefined in CPD's FOIA response — grew from 258 (2022) to 1,404 (2024), a 444% increase. The DOAH adjudication data corroborates this: the city filed motions to amend the charge in 1,904 of 11,043 cases — nearly 1 in 6. Officers appear to be writing citations under charge codes that cannot survive adjudication as written. What the "Other" category contains, and who authorized its use, remains officially unanswered.</div>
+  </div>
+</div>
+
+<!-- TAB 3: FARE EVASION -->
+<div class="content" id="tab3">
+  <div class="section-label">Fare Evasion: Count and Share of Total ANOVs</div>
+  <div class="chart-box"><canvas id="chart3"></canvas></div>
+  <div class="section-label mt">Fare Evasion Citations by Year</div>
+  <div class="chart-box">
+    <div class="bar-mini" id="minibar"></div>
+  </div>
+  <div class="finding" style="border-left-color:#C8801E">
+    <div class="finding-label" style="color:#C8801E">The ROI Problem — Now Quantified</div>
+    <div class="finding-text">Fare evasion has hovered at 8–14% of all ANOVs across the entire period. DOAH adjudication data now closes the revenue loop: 11,043 fare evasion cases produced $2,669,348 in total assessed fines — against $268M in private security contracts. Even accepting every default judgment at face value, the system returned less than one cent for every dollar spent on enforcement infrastructure.</div>
+  </div>
+</div>
+
+<!-- TAB 4: ADJUDICATION (NEW) -->
+<div class="content" id="tab4">
+  <div class="cards">
+    <div class="card" style="border-top:3px solid #2860A0">
+      <div class="card-label">Unique Cases — DOAH</div>
+      <div class="card-value" style="color:#2860A0">11,043</div>
+      <div class="card-sub">Fare evasion cases adjudicated · all years</div>
+    </div>
+    <div class="card" style="border-top:3px solid #C8801E">
+      <div class="card-label">Total Fines Assessed</div>
+      <div class="card-value" style="color:#C8801E">$2.67M</div>
+      <div class="card-sub">Complete fiscal output of adjudication system</div>
+    </div>
+    <div class="card" style="border-top:3px solid #B03030">
+      <div class="card-label">Default Judgments</div>
+      <div class="card-value" style="color:#B03030">65%</div>
+      <div class="card-sub">Defendants who never appeared — auto $300</div>
+    </div>
+    <div class="card" style="border-top:3px solid #B03030">
+      <div class="card-label">Charge Amendments</div>
+      <div class="card-value" style="color:#B03030">1,904</div>
+      <div class="card-sub">City had to change the charge — nearly 1 in 6</div>
+    </div>
+  </div>
+
+  <div class="section-label">Disposition Breakdown — All 11,043 Cases</div>
+  <div class="chart-box" style="margin-bottom:20px"><canvas id="chart4"></canvas></div>
+
+  <div class="section-label">Full Disposition Table</div>
+  <table class="disp-table">
+    <thead>
+      <tr>
+        <th>Disposition</th>
+        <th class="num">Cases</th>
+        <th class="fine">Fine</th>
+        <th class="num">% of Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="disp-highlight">
+        <td>Default — Liable by prove-up <span style="font-size:10px;color:#B03030;font-weight:600">(defendant no-show)</span></td>
+        <td class="num">8,456</td>
+        <td class="fine">$300</td>
+        <td class="num" style="color:#B03030">65%</td>
+      </tr>
+      <tr>
+        <td>City's motion to amend the charge — Granted</td>
+        <td class="num">1,904</td>
+        <td class="fine">$0 / varied</td>
+        <td class="num">15%</td>
+      </tr>
+      <tr style="background:#F0FFF0">
+        <td>Not liable — City failed to establish prima facie case <span style="font-size:10px;color:#2A7A2A;font-weight:600">(city lost outright)</span></td>
+        <td class="num">1,092</td>
+        <td class="fine">$0</td>
+        <td class="num" style="color:#2A7A2A">8%</td>
+      </tr>
+      <tr>
+        <td>Liable — By plea</td>
+        <td class="num">587</td>
+        <td class="fine">$50</td>
+        <td class="num">5%</td>
+      </tr>
+      <tr>
+        <td>City non-suit (city dropped case)</td>
+        <td class="num">488</td>
+        <td class="fine">$0</td>
+        <td class="num">4%</td>
+      </tr>
+      <tr>
+        <td>Liable — Prepaid / contested / other</td>
+        <td class="num">516</td>
+        <td class="fine">varied</td>
+        <td class="num">4%</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="finding" style="border-left-color:#B03030;margin-top:20px">
+    <div class="finding-label" style="color:#B03030">The Default Judgment Machine</div>
+    <div class="finding-text">People who showed up to their hearing had a meaningful chance of winning. The city could not prove its case in 1,092 contested proceedings — roughly one in six contested cases. It also had to amend the charge it was bringing in nearly one in six cases overall. But most defendants did not show up. They received automatic $300 default judgments with no one to argue that the city couldn't prove its case. The enforcement system's primary function, as documented by this data, is generating default judgments against people who cannot navigate a hearing process to contest a $300 fine.</div>
+  </div>
+</div>
+
+<!-- TAB 5: CONTRACTS (NEW) -->
+<div class="content" id="tab5">
+
+  <div class="anomaly-box">
+    <div class="anomaly-label">Termination Anomaly — April 18, 2026</div>
+    <div class="anomaly-text">The CTA terminated the Monterrey Security contract on April 18, 2026 — approximately three weeks after executing an affirmative one-year renewal through April 3, 2027. The termination reason cited: non-appropriation of funds. Contract renewals are not automatic. The same CTA purchasing agent (GM of Purchasing) who processed the original contracts also processed the renewal. No budget crisis was publicly declared in the intervening three weeks. The sequence has no routine procurement explanation.</div>
+  </div>
+
+  <div class="section-label">Contract Record — CTA Private Security · 2021–2025</div>
+  <div class="contract-grid">
+    <div class="contract-card" style="border-top:3px solid #B03030">
+      <div class="contract-vendor">Monterrey Security Consultants</div>
+      <div class="contract-id">B21OP04714 · Buyer: Linares, Iliana</div>
+      <div class="contract-amount" style="color:#B03030">$44,307,824</div>
+      <div class="contract-meta">Primary contract. Buyer: Iliana Linares (GM of Purchasing). Same buyer, same day as Inter-Con contract.</div>
+    </div>
+    <div class="contract-card" style="border-top:3px solid #B03030">
+      <div class="contract-vendor">Monterrey Security — Supplemental</div>
+      <div class="contract-id">B21OP04714B</div>
+      <div class="contract-amount" style="color:#B03030">$3,000,000</div>
+      <div class="contract-meta">Supplemental to primary contract.</div>
+    </div>
+    <div class="contract-card" style="border-top:3px solid #7B5EA7">
+      <div class="contract-vendor">Monterrey — Emergency (June 2021)</div>
+      <div class="contract-id">No ordinance found in 021-049 through 021-075</div>
+      <div class="contract-amount" style="color:#7B5EA7">$3,000,000</div>
+      <div class="contract-meta">Emergency procurement — no board vote found. Executed administratively. Relationship to subsequent $44M contract pending FOIA.</div>
+    </div>
+    <div class="contract-card" style="border-top:3px solid #2860A0">
+      <div class="contract-vendor">Inter-Con Security Systems</div>
+      <div class="contract-id">B21OP04714A · Buyer: Linares, Iliana</div>
+      <div class="contract-amount" style="color:#2860A0">$56,250,000</div>
+      <div class="contract-meta">Same day, same buyer as Monterrey primary contract.</div>
+    </div>
+    <div class="contract-card" style="border-top:3px solid #C8801E">
+      <div class="contract-vendor">Action K-9 Security Services</div>
+      <div class="contract-id">B22OP80021 · Aug 2022</div>
+      <div class="contract-amount" style="color:#C8801E">$55,000,000</div>
+      <div class="contract-meta">Aug 2022 contract.</div>
+    </div>
+    <div class="contract-card" style="border-top:3px solid #C8801E">
+      <div class="contract-vendor">Action K-9 Security Services</div>
+      <div class="contract-id">B23OP80021 · Feb 5, 2025</div>
+      <div class="contract-amount" style="color:#C8801E">$89,600,000</div>
+      <div class="contract-meta">Signed Feb 5, 2025 — 10 months before the FTA pressure campaign began following the Dec 2025 Blue Line fire.</div>
+    </div>
+  </div>
+
+  <div class="section-label mt">Board Authorization Gap</div>
+  <div class="chart-box" style="margin-bottom:20px"><canvas id="chart5"></canvas></div>
+
+  <div class="cards-3">
+    <div class="card" style="border-top:3px solid #8E9EAE">
+      <div class="card-label">Ord. 022-034 Authorized</div>
+      <div class="card-value" style="color:#8E9EAE">$71M</div>
+      <div class="card-sub">Mar 9, 2022 · unanimous 6-0 · Monterrey + Inter-Con combined</div>
+    </div>
+    <div class="card" style="border-top:3px solid #B03030">
+      <div class="card-label">Actual Contract Value</div>
+      <div class="card-value" style="color:#B03030">$97M</div>
+      <div class="card-sub">Monterrey + Inter-Con combined at execution</div>
+    </div>
+    <div class="card" style="border-top:3px solid #B03030">
+      <div class="card-label">Retroactive Approval</div>
+      <div class="card-value" style="color:#B03030">Oct 2024</div>
+      <div class="card-sub">Ord. 024-140 · $26M overspend ratified 2.5 years later</div>
+    </div>
+  </div>
+
+  <div class="section-label mt">Monterrey Background</div>
+  <div class="finding" style="border-left-color:#B03030">
+    <div class="finding-label" style="color:#B03030">Contractor Profile</div>
+    <div class="finding-text">
+      <strong>Juan Gaytan</strong> (founder) — CPD officer, resigned 2002 following 15-month suspension. City settled federal lawsuit related to his conduct for $95,000.<br><br>
+      <strong>Santiago Solis</strong> (co-founder) — brother of Danny Solis, 25th Ward alderman who pleaded guilty to federal corruption charges in 2023.<br><br>
+      <strong>Executive roster</strong>: Anthony Riccio (former CPD Chief of Patrol), Fred Waller (former CPD Area Central commander), Hiram Grau (former Illinois State Police director).<br><br>
+      <strong>Prior record</strong>: $2.9M city contract rescinded following ethics violation finding. FBI investigation into no-bid Rosemont contract.<br><br>
+      <strong>Campaign contributions</strong>: Gaytan + Monterrey combined — $306,621 across 255 transactions. George Cardenas (Transportation Committee Chair, CTA oversight): $3,500 in 2025 while contract active. Mayor Brandon Johnson: $3,000 (July 2023). Most recent contribution: $1,750 to Rosemont Voters League, March 13, 2026 — five weeks before termination.
+    </div>
+  </div>
+</div>
+
+<!-- TAB 6: FOIA STATUS -->
+<div class="content" id="tab6">
+  <div class="foia-banner">
+    <div class="finding-label" style="color:#C8801E">Consultation Pattern — Documented in Statutory Record</div>
+    <div class="finding-text">Three of five original agencies — Department of Finance, Cook County Sheriff, and the CTA — each invoked the identical 5 ILCS 140/3(e) consultation extension, citing need to consult another public body, within eight days of each other, on requests filed the same day. The Mayor's Office, responding to a later request, invoked a different extension (undue burden) and notably did not check the consultation box. 14 FOIAs are now active across federal, state, and municipal agencies.</div>
+  </div>
+  <div class="foia-grid" id="foia-grid"></div>
+</div>
+
+<div class="footer">
+  PolicyTorque LLC · michael@policytorque.com · Investigation ongoing · 14 FOIAs filed · DOAH data: 11,043 cases analyzed · Last updated April 24, 2026
+</div>
+
+<script>
+const YEARS = ["2018","2019","2020","2021","2022","2023","2024","2025"];
+const ANOV_TOTAL = [6546,7748,5810,5625,4189,10787,12043,18040];
+const CATS = {
+  "Smoking":           [1958,2754,2288,2022,1757,3880,3664,4364],
+  "Alcohol":           [958,1335,1028,1129,725,2173,2452,2979],
+  "Fare Evasion":      [550,1078,526,512,381,1382,1887,2475],
+  "Unsafe Conduct":    [231,292,315,185,223,775,932,1218],
+  "Unknown/Other":     [2401,1767,1403,1671,1040,2317,2848,6226],
+};
+const CAT_COLORS = {
+  "Smoking":"#4A7FB5","Alcohol":"#7B5EA7","Fare Evasion":"#D4882A",
+  "Unsafe Conduct":"#C0622A","Unknown/Other":"#CFD8DC",
+};
+const ARRESTS = {
+  Felony:     [46,54,57,34,77,128,148,134],
+  Misdemeanor:[131,136,70,35,75,469,268,204],
+  Other:      [201,246,195,122,258,730,1404,1233],
+};
+const FARE_EVA = [550,1078,526,512,381,1382,1887,2475];
+const FARE_PCT = FARE_EVA.map((v,i)=>Math.round(v/ANOV_TOTAL[i]*100));
+const GD = {color:"#DDE3EC"};
+const TD = {color:"#8E9EAE",font:{family:"system-ui",size:11}};
+
+// Chart 0 — ANOVs
+new Chart(document.getElementById("chart0"),{
+  type:"bar",
+  data:{labels:YEARS,datasets:[{label:"Total ANOVs",data:ANOV_TOTAL,backgroundColor:YEARS.map(y=>y>="2023"?"#C8801E":"#B8CADD"),borderRadius:3}]},
+  options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>" ANOVs: "+c.parsed.y.toLocaleString()}}},scales:{x:{grid:GD,ticks:TD},y:{grid:GD,ticks:{...TD,callback:v=>v.toLocaleString()}}}},
+});
+
+// Chart 1 — violation types
+new Chart(document.getElementById("chart1"),{
+  type:"bar",
+  data:{labels:YEARS,datasets:Object.entries(CATS).map(([name,data])=>({label:name,data,backgroundColor:CAT_COLORS[name],stack:"a",borderRadius:0}))},
+  options:{responsive:true,plugins:{legend:{position:"bottom",labels:{color:"#5A6A7A",font:{size:11,family:"system-ui"},boxWidth:12,padding:16}},tooltip:{callbacks:{label:c=>" "+c.dataset.label+": "+c.parsed.y.toLocaleString()}}},scales:{x:{grid:GD,ticks:TD,stacked:true},y:{grid:GD,ticks:{...TD,callback:v=>v.toLocaleString()},stacked:true}}},
+});
+
+// Chart 2 — arrests
+new Chart(document.getElementById("chart2"),{
+  type:"bar",
+  data:{labels:YEARS,datasets:[{label:"Felony",data:ARRESTS.Felony,backgroundColor:"#B03030",stack:"a"},{label:"Misdemeanor",data:ARRESTS.Misdemeanor,backgroundColor:"#7B5EA7",stack:"a"},{label:"Other (undefined)",data:ARRESTS.Other,backgroundColor:"#B8CADD",stack:"a",borderRadius:3}]},
+  options:{responsive:true,plugins:{legend:{position:"bottom",labels:{color:"#5A6A7A",font:{size:11,family:"system-ui"},boxWidth:12,padding:16}},tooltip:{callbacks:{label:c=>" "+c.dataset.label+": "+c.parsed.y.toLocaleString()}}},scales:{x:{grid:GD,ticks:TD,stacked:true},y:{grid:GD,ticks:TD,stacked:true}}},
+});
+
+// Chart 3 — fare evasion dual axis
+new Chart(document.getElementById("chart3"),{
+  type:"line",
+  data:{labels:YEARS,datasets:[
+    {label:"Fare Evasion (count)",data:FARE_EVA,borderColor:"#C8801E",backgroundColor:"rgba(200,128,30,0.08)",borderWidth:2.5,pointRadius:4,pointBackgroundColor:"#C8801E",fill:true,yAxisID:"y"},
+    {label:"% of Total ANOVs",data:FARE_PCT,borderColor:"#2860A0",borderWidth:1.5,borderDash:[5,3],pointRadius:3,pointBackgroundColor:"#2860A0",fill:false,yAxisID:"y2"},
+  ]},
+  options:{responsive:true,plugins:{legend:{position:"bottom",labels:{color:"#5A6A7A",font:{size:11,family:"system-ui"},boxWidth:12,padding:16}},tooltip:{callbacks:{label:c=>c.dataset.yAxisID==="y2"?" "+c.parsed.y+"% of total":" "+c.parsed.y.toLocaleString()}}},scales:{x:{grid:GD,ticks:TD},y:{grid:GD,ticks:{...TD,callback:v=>v.toLocaleString()},position:"left"},y2:{grid:{display:false},ticks:{...TD,color:"#2860A0",callback:v=>v+"%"},position:"right",max:20}}},
+});
+
+// Mini bar
+const minibar = document.getElementById("minibar");
+const maxFare = Math.max(...FARE_EVA);
+FARE_EVA.forEach((v,i)=>{
+  const pct = Math.round(v/maxFare*100);
+  const col = document.createElement("div");
+  col.className = "bar-mini-col";
+  col.innerHTML = `<div class="bar-mini-val">${v.toLocaleString()}</div><div class="bar-mini-bar" style="height:${pct}%;background:${i>=5?"#C8801E":"#B8CADD"}"></div><div class="bar-mini-yr">${YEARS[i]}</div>`;
+  minibar.appendChild(col);
+});
+
+// Chart 4 — adjudication dispositions donut
+new Chart(document.getElementById("chart4"),{
+  type:"doughnut",
+  data:{
+    labels:["Default ($300)","Charge Amended","Not Liable — City Failed","Liable by Plea ($50)","City Non-Suit","Other"],
+    datasets:[{data:[8456,1904,1092,587,488,516],backgroundColor:["#B03030","#C8801E","#2A7A2A","#2860A0","#8E9EAE","#CFD8DC"],borderWidth:2,borderColor:"#F4F6F9"}],
+  },
+  options:{responsive:true,cutout:"60%",plugins:{legend:{position:"bottom",labels:{color:"#5A6A7A",font:{size:11,family:"system-ui"},boxWidth:12,padding:14}},tooltip:{callbacks:{label:c=>" "+c.label+": "+c.parsed.toLocaleString()+" cases"}}}},
+});
+
+// Chart 5 — board auth gap
+new Chart(document.getElementById("chart5"),{
+  type:"bar",
+  data:{
+    labels:["Board Authorized\n(Ord. 022-034, Mar 2022)","Actually Contracted","Retroactive Auth\n(Ord. 024-140, Oct 2024)"],
+    datasets:[{
+      label:"$ Million",
+      data:[71,97,26],
+      backgroundColor:["#2860A0","#B03030","#C8801E"],
+      borderRadius:4,
+    }],
+  },
+  options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>" $"+c.parsed.y+"M"}}},scales:{x:{grid:GD,ticks:TD},y:{grid:GD,ticks:{...TD,callback:v=>"$"+v+"M"},max:110}}},
+});
+
+// FOIA data
+const FOIA = [
+  {agency:"CPD — Original",ref:"P166396",contact:"R. Earnshaw",filed:"Apr 13, 2026",status:"PARTIAL · AG COMPLAINT FILED",color:"#B03030",consult:false,produced:false,detail:"Citation and arrest data produced. Budget and activity records (Record Sets 1 & 2) withheld, no statutory exemption cited. AG Public Access Counselor complaint filed and refiled to publicaccessbureau@illinoisattorneygeneral.gov."},
+  {agency:"CPD — Follow-up",ref:"P169488-042126",contact:"CPD FOIA Officer",filed:"Apr 21, 2026",status:"EXTENSION · DUE APR 28",color:"#C8801E",consult:false,produced:false,detail:"Follow-up for 'Other' arrest category definition, deployment directives, enforcement targets, and private security coordination records. Extension citing legal review. Response due COB April 28."},
+  {agency:"Dept. of Finance",ref:"F136682-042126",contact:"April Lundberg",filed:"Apr 21, 2026",status:"EXTENSION · DUE MAY 4",color:"#C8801E",consult:true,produced:false,detail:"Extension invoked one business day after receipt, citing consultation with another public body. MCC codes provided per clarification. Response due COB May 4, 2026."},
+  {agency:"Dept. of Administrative Hearings",ref:"H135833-041326",contact:"Tracy (FOIA Liaison)",filed:"Apr 13, 2026",status:"PRODUCED · CLOSED",color:"#2A7A2A",consult:false,produced:true,detail:"11,043 fare evasion adjudication cases produced. Dataset fully analyzed: $2,669,348 total fines assessed, 65% default judgments, 1,092 prima facie failures, 1,904 charge amendments."},
+  {agency:"Cook County Sheriff",ref:"R091132-041326",contact:"Tracy Ho, Asst. General Counsel",filed:"Apr 13, 2026",status:"EXTENSION · DUE APR 27",color:"#C8801E",consult:true,produced:false,detail:"Extension invoking consultation with another public body. Response due April 27, 2026."},
+  {agency:"Chicago Transit Authority",ref:"R002355-041326 + 6 supplementals",contact:"Haley Lowrance",filed:"Apr 13, 2026",status:"EXTENSION · NO DEADLINE STATED",color:"#C8801E",consult:true,produced:false,detail:"Extension invoking consultation with another public body — no deadline stated, which is a defect in the notice. Six supplemental requests filed covering contracts, board minutes, emergency procurement, change orders, and overspend documentation. Follow-up Thursday 4pm."},
+  {agency:"Office of the Mayor",ref:"Pending",contact:"Hibo Aden",filed:"Apr 22, 2026",status:"EXTENSION · DUE APR 29",color:"#C8801E",consult:false,produced:false,detail:"Extension invoking undue burden — notably did NOT check the consultation box used by Finance, Sheriff, and CTA. Response due COB April 29."},
+  {agency:"Office of Budget & Management",ref:"Pending",contact:"OBM FOIA Officer",filed:"Apr 22, 2026",status:"PENDING",color:"#2860A0",consult:false,produced:false,detail:"CPD Transit Section budget appropriations and expenditures 2018–present — the same records CPD withheld without citing an exemption."},
+  {agency:"Chicago OIG",ref:"Pending",contact:"OIG FOIA Officer",filed:"Apr 22, 2026",status:"PENDING",color:"#2860A0",consult:false,produced:false,detail:"Any OIG investigation, audit, or review records related to Monterrey Security Consultants and CTA private security contracts."},
+  {agency:"IL Labor Relations Board",ref:"Pending",contact:"Helen J. Kim, General Counsel",filed:"Apr 22, 2026",status:"PENDING · GC ENGAGED",color:"#C8801E",consult:false,produced:false,detail:"GC personally responded twice. Narrowed to CTA as public employer — ILRB has no jurisdiction over private sector ULPs. Response pending."},
+  {agency:"NLRB",ref:"2026-NLFO-01071",contact:"Michael Maddox, FOIA Attorney",filed:"Apr 22, 2026",status:"IN PRODUCTION · 20 BUS. DAYS",color:"#2860A0",consult:false,produced:false,detail:"Seeking dismissal letters for 13-CB-361188 (SEIU Local 1 / Monterrey) and 13-CA-361201 (Monterrey), both filed March 3 and dismissed April 9, 2025. Records in production."},
+  {agency:"Dept. of War — DPA Title III · Jervois Cobalt",ref:"26-F-2034",contact:"Turia Winkler (contractor), Action Officer · turia.d.winkler.ctr@mail.mil · 571-372-0448",filed:"Apr 23, 2026",status:"EXTENSION · NO DEADLINE STATED",color:"#C8801E",consult:true,produced:false,detail:"OSW/JS FOIA Requester Service Center invoked unusual circumstances extension April 27, 2026 — four days after receipt. Reasons cited: geographic separation of records, potential volume, inter-agency consultation. Placed in complex processing queue. Current DoW workload: 3,456 open requests. No new deadline stated. Fee waiver deferred to conclusion of search. Expedited processing request not acknowledged. Action Officer Turia Winkler is a contractor (.ctr). Signed by Madalyn Harper for Pamela Andrews, Chief FOIA."},
+];
+
+const grid = document.getElementById("foia-grid");
+FOIA.forEach(f=>{
+  const card = document.createElement("div");
+  card.className = "foia-card";
+  card.style.borderTop = `3px solid ${f.color}`;
+  card.innerHTML = `
+    <div class="foia-head">
+      <div class="foia-agency">${f.agency}</div>
+      <div class="foia-badges">
+        ${f.consult?'<span class="badge badge-consult">CONSULTATION</span>':""}
+        ${f.produced?'<span class="badge badge-produced">PRODUCED</span>':""}
+        <span class="badge" style="color:${f.color};background:${f.color}18;border:1px solid ${f.color}44">${f.status}</span>
+      </div>
+    </div>
+    <div class="foia-ref">REF: ${f.ref}</div>
+    <div class="foia-contact">${f.contact} · Filed ${f.filed}</div>
+    <div class="foia-detail">${f.detail}</div>
+  `;
+  grid.appendChild(card);
+});
+
+function showTab(n){
+  document.querySelectorAll(".content").forEach((el,i)=>el.classList.toggle("active",i===n));
+  document.querySelectorAll(".tab").forEach((el,i)=>el.classList.toggle("active",i===n));
+}
+</script>
+</body>
+</html>
