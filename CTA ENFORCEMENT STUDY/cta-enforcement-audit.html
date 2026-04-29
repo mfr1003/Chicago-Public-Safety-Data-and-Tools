@@ -118,10 +118,10 @@ button{font-family:inherit;cursor:pointer}
 <body>
 
 <div class="header">
-  <div class="eyebrow">Active Investigation · PolicyTorque · Apr 24, 2026 · 14 FOIAs Filed</div>
+  <div class="eyebrow">Active Investigation · PolicyTorque · Apr 29, 2026 · 15 FOIAs · 2 PAC Appeals</div>
   <div class="title">CTA Transit Enforcement Audit</div>
   <div class="subtitle">
-    CPD Transit Unit citation and arrest data (2018–2025), DOAH adjudication records (11,043 cases), and CTA procurement records ($268M in private security contracts). Three of five original FOIA respondents invoked identical consultation extensions within eight days of each other.
+    CPD Transit Unit citation and arrest data (2018–2025), DOAH adjudication records (11,043 cases), and CTA procurement records ($251M in private security contracts). Three of five original FOIA respondents invoked identical consultation extensions within eight days of each other.
     <span class="alert"> Monterrey Security terminated April 18, 2026 — three weeks after contract renewal.</span>
   </div>
 </div>
@@ -146,7 +146,7 @@ button{font-family:inherit;cursor:pointer}
     <div class="roi-divider"></div>
     <div class="roi-right">
       <div class="roi-stat">
-        <div class="roi-stat-val" style="color:#E87070">$268M</div>
+        <div class="roi-stat-val" style="color:#E87070">$251M</div>
         <div class="roi-stat-lbl">Private security contracts</div>
       </div>
       <div class="roi-stat">
@@ -191,7 +191,7 @@ button{font-family:inherit;cursor:pointer}
   <div class="chart-box"><canvas id="chart0"></canvas></div>
   <div class="finding" style="border-left-color:#C8801E">
     <div class="finding-label" style="color:#C8801E">The Core Finding</div>
-    <div class="finding-text">The CTA spent approximately $268 million on private security contracts while the Department of Administrative Hearings produced $2,669,348 in total fare evasion fines — less than one percent of contract cost. 65% of that fine revenue came from automatic $300 default judgments against defendants who did not appear. Of the cases actually contested, the city failed to establish a prima facie case in 1,092 instances. The enforcement system's primary output is not fare compliance or revenue — it is default judgments against people who cannot navigate an administrative hearing process.</div>
+    <div class="finding-text">The CTA spent approximately $251 million on private security contracts while the Department of Administrative Hearings produced $2,669,348 in total fare evasion fines — less than one percent of contract cost. 65% of that fine revenue came from automatic $300 default judgments against defendants who did not appear. Of the cases actually contested, the city failed to establish a prima facie case in 1,092 instances. The enforcement system's primary output is not fare compliance or revenue — it is default judgments against people who cannot navigate an administrative hearing process.</div>
   </div>
 </div>
 
@@ -201,7 +201,7 @@ button{font-family:inherit;cursor:pointer}
   <div class="chart-box"><canvas id="chart1"></canvas></div>
   <div class="finding" style="border-left-color:#2860A0">
     <div class="finding-label" style="color:#2860A0">Key Finding</div>
-    <div class="finding-text">Smoking is the single largest enforcement category in every year on record. In 2025: 4,364 smoking citations versus 2,475 fare evasion citations. Fare evasion has consistently represented 8–14% of total ANOVs. If the fiscal argument for the $268M private security apparatus is fare revenue recovery, the citation composition does not support it — and the DOAH adjudication data now confirms the revenue was $2.67M.</div>
+    <div class="finding-text">Smoking is the single largest enforcement category in every year on record. In 2025: 4,364 smoking citations versus 2,475 fare evasion citations. Fare evasion has consistently represented 8–14% of total ANOVs. If the fiscal argument for the $251M private security apparatus is fare revenue recovery, the citation composition does not support it — and the DOAH adjudication data now confirms the revenue was $2.67M.</div>
   </div>
 </div>
 
@@ -242,7 +242,7 @@ button{font-family:inherit;cursor:pointer}
   </div>
   <div class="finding" style="border-left-color:#C8801E">
     <div class="finding-label" style="color:#C8801E">The ROI Problem — Now Quantified</div>
-    <div class="finding-text">Fare evasion has hovered at 8–14% of all ANOVs across the entire period. DOAH adjudication data now closes the revenue loop: 11,043 fare evasion cases produced $2,669,348 in total assessed fines — against $268M in private security contracts. Even accepting every default judgment at face value, the system returned less than one cent for every dollar spent on enforcement infrastructure.</div>
+    <div class="finding-text">Fare evasion has hovered at 8–14% of all ANOVs across the entire period. DOAH adjudication data now closes the revenue loop: 11,043 fare evasion cases produced $2,669,348 in total assessed fines — against $251M in private security contracts. Even accepting every default judgment at face value, the system returned less than one cent for every dollar spent on enforcement infrastructure.</div>
   </div>
 </div>
 
@@ -416,13 +416,13 @@ button{font-family:inherit;cursor:pointer}
 <div class="content" id="tab6">
   <div class="foia-banner">
     <div class="finding-label" style="color:#C8801E">Consultation Pattern — Documented in Statutory Record</div>
-    <div class="finding-text">Three of five original agencies — Department of Finance, Cook County Sheriff, and the CTA — each invoked the identical 5 ILCS 140/3(e) consultation extension, citing need to consult another public body, within eight days of each other, on requests filed the same day. The Mayor's Office, responding to a later request, invoked a different extension (undue burden) and notably did not check the consultation box. 14 FOIAs are now active across federal, state, and municipal agencies.</div>
+    <div class="finding-text">Three of five original agencies — Department of Finance, Cook County Sheriff, and the CTA — each invoked the identical 5 ILCS 140/3(e) consultation extension, citing need to consult another public body, within eight days of each other, on requests filed the same day. The Mayor's Office, responding to a later request, invoked a different extension (undue burden) and notably did not check the consultation box. 15 FOIAs and 2 PAC appeals are now active across federal, state, and municipal agencies.</div>
   </div>
   <div class="foia-grid" id="foia-grid"></div>
 </div>
 
 <div class="footer">
-  PolicyTorque LLC · michael@policytorque.com · Investigation ongoing · 14 FOIAs filed · DOAH data: 11,043 cases analyzed · Last updated April 24, 2026
+  PolicyTorque LLC · michael@policytorque.com · Investigation ongoing · 15 FOIAs filed · 2 PAC appeals · DOAH data: 11,043 cases analyzed · Last updated April 29, 2026
 </div>
 
 <script>
@@ -519,17 +519,19 @@ new Chart(document.getElementById("chart5"),{
 // FOIA data
 const FOIA = [
   {agency:"CPD — Original",ref:"P166396",contact:"R. Earnshaw",filed:"Apr 13, 2026",status:"PARTIAL · AG COMPLAINT FILED",color:"#B03030",consult:false,produced:false,detail:"Citation and arrest data produced. Budget and activity records (Record Sets 1 & 2) withheld, no statutory exemption cited. AG Public Access Counselor complaint filed and refiled to publicaccessbureau@illinoisattorneygeneral.gov."},
-  {agency:"CPD — Follow-up",ref:"P169488-042126",contact:"CPD FOIA Officer",filed:"Apr 21, 2026",status:"EXTENSION · DUE APR 28",color:"#C8801E",consult:false,produced:false,detail:"Follow-up for 'Other' arrest category definition, deployment directives, enforcement targets, and private security coordination records. Extension citing legal review. Response due COB April 28."},
+  {agency:"CPD — Follow-up",ref:"P169488-042126",contact:"CPD FOIA Officer",filed:"Apr 21, 2026",status:"EXTENSION · DUE MAY 5",color:"#C8801E",consult:false,produced:false,detail:"Follow-up for 'Other' arrest category definition, deployment directives, enforcement targets, and private security coordination records. CPD requested 5-day extension April 22. New response deadline COB May 5, 2026."},
   {agency:"Dept. of Finance",ref:"F136682-042126",contact:"April Lundberg",filed:"Apr 21, 2026",status:"EXTENSION · DUE MAY 4",color:"#C8801E",consult:true,produced:false,detail:"Extension invoked one business day after receipt, citing consultation with another public body. MCC codes provided per clarification. Response due COB May 4, 2026."},
   {agency:"Dept. of Administrative Hearings",ref:"H135833-041326",contact:"Tracy (FOIA Liaison)",filed:"Apr 13, 2026",status:"PRODUCED · CLOSED",color:"#2A7A2A",consult:false,produced:true,detail:"11,043 fare evasion adjudication cases produced. Dataset fully analyzed: $2,669,348 total fines assessed, 65% default judgments, 1,092 prima facie failures, 1,904 charge amendments."},
-  {agency:"Cook County Sheriff",ref:"R091132-041326",contact:"Tracy Ho, Asst. General Counsel",filed:"Apr 13, 2026",status:"EXTENSION · DUE APR 27",color:"#C8801E",consult:true,produced:false,detail:"Extension invoking consultation with another public body. Response due April 27, 2026."},
+  {agency:"Cook County Sheriff",ref:"R091132-041326",contact:"Tracy Ho, Asst. General Counsel",filed:"Apr 13, 2026",status:"EXTENSION · DUE MAY 4",color:"#C8801E",consult:true,produced:false,detail:"Extension invoking consultation with another public body. Originally due April 27, 2026 — extended to May 4, 2026."},
   {agency:"Chicago Transit Authority",ref:"R002355-041326 + 6 supplementals",contact:"Haley Lowrance",filed:"Apr 13, 2026",status:"EXTENSION · NO DEADLINE STATED",color:"#C8801E",consult:true,produced:false,detail:"Extension invoking consultation with another public body — no deadline stated, which is a defect in the notice. Six supplemental requests filed covering contracts, board minutes, emergency procurement, change orders, and overspend documentation. Follow-up Thursday 4pm."},
-  {agency:"Office of the Mayor",ref:"Pending",contact:"Hibo Aden",filed:"Apr 22, 2026",status:"EXTENSION · DUE APR 29",color:"#C8801E",consult:false,produced:false,detail:"Extension invoking undue burden — notably did NOT check the consultation box used by Finance, Sheriff, and CTA. Response due COB April 29."},
+  {agency:"Office of the Mayor",ref:"F136884",contact:"Hibo Aden",filed:"Apr 22, 2026",status:"EXTENSION · DUE MAY 6",color:"#C8801E",consult:false,produced:false,detail:"Extension letter received April 23 invoking undue burden under 5 ILCS 140/3(d): 'cannot be complied with within the time limits without unduly burdening or interfering with the operations of the public body.' Notably did NOT check the consultation box used by Finance, Sheriff, and CTA. New deadline COB May 6, 2026."},
   {agency:"Office of Budget & Management",ref:"Pending",contact:"OBM FOIA Officer",filed:"Apr 22, 2026",status:"PENDING",color:"#2860A0",consult:false,produced:false,detail:"CPD Transit Section budget appropriations and expenditures 2018–present — the same records CPD withheld without citing an exemption."},
-  {agency:"Chicago OIG",ref:"Pending",contact:"OIG FOIA Officer",filed:"Apr 22, 2026",status:"PENDING",color:"#2860A0",consult:false,produced:false,detail:"Any OIG investigation, audit, or review records related to Monterrey Security Consultants and CTA private security contracts."},
-  {agency:"IL Labor Relations Board",ref:"Pending",contact:"Helen J. Kim, General Counsel",filed:"Apr 22, 2026",status:"PENDING · GC ENGAGED",color:"#C8801E",consult:false,produced:false,detail:"GC personally responded twice. Narrowed to CTA as public employer — ILRB has no jurisdiction over private sector ULPs. Response pending."},
+  {agency:"Chicago OIG",ref:"FOIA 26-54 (OIG)",contact:"Callie Folke, Attorney (IGO)",filed:"Apr 22, 2026",status:"DENIED · PAC APPEAL FILED",color:"#B03030",consult:false,produced:false,detail:"Response received April 29, 2026. Record Set 1 (Monterrey investigation records): OIG claims no CTA jurisdiction — referred to OEIG. Record Set 2 (ethics violation records): Denied under City Ordinance §2-56-110 and 5 ILCS 140/7.5(h) — OIG did not deny records exist, only claimed confidentiality exemption. Record Set 3 (CTA private security contracts): No jurisdiction. PAC appeal filed on Record Set 2 denial. OEIG FOIA filed separately."},
+  {agency:"IL Labor Relations Board",ref:"ILRB FOIA 26-54",contact:"Helen J. Kim, General Counsel/FOIA Officer",filed:"Apr 22, 2026",status:"CLOSED · NO RECORDS FOUND",color:"#2A7A2A",consult:false,produced:true,detail:"Response received April 29, 2026. Reasonable search conducted — no unfair labor practice charges, complaints, petitions, or related filings found involving CTA as public employer in connection with security-related employees or operations, January 2022 through present. Request narrowed from original scope after GC clarified ILRB has no jurisdiction over private sector ULPs."},
+  {agency:"PAC Appeal 2014 OIG Record Set 2",ref:"Pending",contact:"Public Access Counselor · public.access@ilag.gov",filed:"Apr 29, 2026",status:"FILED · PENDING DOCKET",color:"#7B5EA7",consult:false,produced:false,detail:"PAC appeal filed April 29, 2026 challenging OIG denial of ethics violation records (Record Set 2). OIG neither confirmed records exist nor provided compliant 5 ILCS 140/8(g) notice that no records exist. Conditional language — 'to the extent OIG has records' — does not satisfy FOIA obligations. Non-investigatory records related to a publicly reported contract rescission are not categorically exempt. Sent to public.access@ilag.gov."},
+  {agency:"Office of Executive Inspector General (OEIG)",ref:"Pending",contact:"Neil P. Olson, General Counsel · OEIG.FOIA@illinois.gov",filed:"Apr 29, 2026",status:"PENDING · 5 BUS. DAYS",color:"#C8801E",consult:false,produced:false,detail:"Filed April 29, 2026 following OIG referral. Sent to OEIG.FOIA@illinois.gov. OEIG has actual jurisdiction over CTA. Seeking investigation, audit, or review records related to Monterrey Security Consultants and CTA private security contracts, and records related to the ethics violation contract rescission."},
   {agency:"NLRB",ref:"2026-NLFO-01071",contact:"Michael Maddox, FOIA Attorney",filed:"Apr 22, 2026",status:"IN PRODUCTION · 20 BUS. DAYS",color:"#2860A0",consult:false,produced:false,detail:"Seeking dismissal letters for 13-CB-361188 (SEIU Local 1 / Monterrey) and 13-CA-361201 (Monterrey), both filed March 3 and dismissed April 9, 2025. Records in production."},
-  {agency:"Dept. of War — DPA Title III · Jervois Cobalt",ref:"26-F-2034",contact:"Turia Winkler (contractor), Action Officer · turia.d.winkler.ctr@mail.mil · 571-372-0448",filed:"Apr 23, 2026",status:"EXTENSION · NO DEADLINE STATED",color:"#C8801E",consult:true,produced:false,detail:"OSW/JS FOIA Requester Service Center invoked unusual circumstances extension April 27, 2026 — four days after receipt. Reasons cited: geographic separation of records, potential volume, inter-agency consultation. Placed in complex processing queue. Current DoW workload: 3,456 open requests. No new deadline stated. Fee waiver deferred to conclusion of search. Expedited processing request not acknowledged. Action Officer Turia Winkler is a contractor (.ctr). Signed by Madalyn Harper for Pamela Andrews, Chief FOIA."},
+
 ];
 
 const grid = document.getElementById("foia-grid");
