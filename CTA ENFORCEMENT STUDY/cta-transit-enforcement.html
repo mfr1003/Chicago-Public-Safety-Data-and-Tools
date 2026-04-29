@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>$251 Million Out. $2.67 Million Back. — PolicyTorque</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700;1,900&family=DM+Mono:wght@400;500&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: #0a0a0a;
+      color: #f0ede8;
+      font-family: 'Lora', Georgia, serif;
+      font-size: 18px;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ─── HEADER ─── */
+    header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      border-bottom: 1px solid #1e1e1e;
+      background: rgba(10,10,10,0.97);
+      backdrop-filter: blur(16px);
+    }
+    .header-inner {
+      max-width: 1400px; margin: 0 auto; padding: 0 2.5rem;
+      height: 64px; display: flex; align-items: center; justify-content: space-between;
+    }
+    .logo {
+      font-family: 'Playfair Display', serif; font-weight: 900; font-size: 1.45rem;
+      color: #f0ede8; text-decoration: none; letter-spacing: -0.02em;
+    }
+    .logo span { color: #c0392b; }
+    nav { display: flex; align-items: center; gap: 2rem; }
+    nav a {
+      font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.14em;
+      text-transform: uppercase; color: #aaa; text-decoration: none; transition: color 0.2s;
+    }
+    nav a:hover { color: #f0ede8; }
+    .nav-subscribe {
+      background: #c0392b; color: #fff !important;
+      padding: 0.5rem 1.1rem; letter-spacing: 0.1em;
+    }
+    .nav-subscribe:hover { background: #a93226; }
+
+    /* ─── ARTICLE HERO ─── */
+    .article-hero {
+      padding-top: 64px;
+      border-bottom: 1px solid #1e1e1e;
+      position: relative; overflow: hidden;
+    }
+    .article-hero::before {
+      content: '';
+      position: absolute; top: 64px; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, #c0392b, transparent);
+    }
+    .hero-grid-bg {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(#1e1e1e 1px, transparent 1px),
+        linear-gradient(90deg, #1e1e1e 1px, transparent 1px);
+      background-size: 80px 80px;
+      opacity: 0.2;
+      pointer-events: none;
+    }
+    .article-hero-inner {
+      max-width: 900px; margin: 0 auto; padding: 4rem 2.5rem 3.5rem;
+      position: relative; z-index: 1;
+    }
+    .article-eyebrow {
+      font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.2em;
+      text-transform: uppercase; color: #c0392b; margin-bottom: 1.5rem;
+      display: flex; align-items: center; gap: 1rem;
+    }
+    .article-eyebrow::before { content: ''; display: block; width: 32px; height: 2px; background: #c0392b; }
+    .article-title {
+      font-family: 'Playfair Display', serif; font-weight: 900;
+      font-size: clamp(2.8rem, 6vw, 5.5rem);
+      line-height: 0.95; letter-spacing: -0.04em;
+      color: #f0ede8; margin-bottom: 1.75rem;
+    }
+    .article-title em { font-style: italic; color: #c0392b; }
+    .article-deck {
+      font-family: 'Lora', serif; font-size: 1.15rem; color: #bbb;
+      line-height: 1.75; margin-bottom: 2.5rem;
+      border-left: 2px solid #c0392b; padding-left: 1.5rem;
+    }
+    .article-meta {
+      font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.12em;
+      text-transform: uppercase; color: #777;
+      display: flex; gap: 2rem; flex-wrap: wrap;
+      padding-top: 1.5rem; border-top: 1px solid #1e1e1e;
+    }
+    .article-meta span { color: #aaa; }
+
+    /* ─── STAT BAR ─── */
+    .stat-bar {
+      background: #0d0d0d; border-bottom: 1px solid #1e1e1e;
+    }
+    .stat-bar-inner {
+      max-width: 900px; margin: 0 auto; padding: 0 2.5rem;
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      border-left: 1px solid #1e1e1e; border-right: 1px solid #1e1e1e;
+    }
+    .stat-cell {
+      padding: 1.75rem 1.5rem; border-right: 1px solid #1e1e1e;
+      display: flex; flex-direction: column; gap: 0.35rem;
+    }
+    .stat-cell:last-child { border-right: none; }
+    .stat-val {
+      font-family: 'Playfair Display', serif; font-weight: 900;
+      font-size: 2rem; line-height: 1; letter-spacing: -0.03em; color: #f0ede8;
+    }
+    .stat-val.red { color: #c0392b; }
+    .stat-val.gold { color: #d4a843; }
+    .stat-lbl {
+      font-family: 'DM Mono', monospace; font-size: 0.52rem;
+      letter-spacing: 0.1em; text-transform: uppercase; color: #777;
+      line-height: 1.5;
+    }
+
+    /* ─── ARTICLE BODY ─── */
+    .article-body {
+      max-width: 900px; margin: 0 auto; padding: 3.5rem 2.5rem 5rem;
+    }
+    .article-body p {
+      margin-bottom: 1.6rem; color: #d8d5d0; line-height: 1.8;
+    }
+    .article-body p:first-child { color: #f0ede8; font-size: 1.1rem; }
+
+    h2.section-hed {
+      font-family: 'Playfair Display', serif; font-weight: 900;
+      font-size: 1.6rem; letter-spacing: -0.025em; color: #f0ede8;
+      margin: 3.5rem 0 1.25rem; line-height: 1.2;
+    }
+    h2.section-hed em { font-style: italic; color: #c0392b; }
+
+    h3.sub-hed {
+      font-family: 'DM Mono', monospace; font-size: 0.65rem;
+      letter-spacing: 0.16em; text-transform: uppercase; color: #c0392b;
+      margin: 2.5rem 0 0.85rem;
+    }
+
+    /* ─── PULL QUOTE ─── */
+    .pull-quote {
+      margin: 2.5rem 0; padding: 2rem 2.5rem;
+      border-left: 3px solid #c0392b; background: #0f0a0a;
+    }
+    .pull-quote p {
+      font-family: 'Playfair Display', serif; font-style: italic;
+      font-size: 1.25rem; line-height: 1.5; color: #f0ede8 !important;
+      margin-bottom: 0 !important;
+    }
+
+    /* ─── DATA CALLOUT ─── */
+    .data-callout {
+      margin: 2.5rem 0;
+      border: 1px solid #2a1414; background: #0d0808;
+      display: grid; grid-template-columns: auto 1fr;
+    }
+    .data-callout-val {
+      padding: 2rem 2.5rem; border-right: 1px solid #2a1414;
+      display: flex; flex-direction: column; justify-content: center;
+      background: #0f0a0a; min-width: 200px;
+    }
+    .data-callout-val .big {
+      font-family: 'Playfair Display', serif; font-weight: 900;
+      font-size: 2.8rem; line-height: 1; letter-spacing: -0.04em; color: #c0392b;
+    }
+    .data-callout-val .lbl {
+      font-family: 'DM Mono', monospace; font-size: 0.52rem;
+      letter-spacing: 0.1em; text-transform: uppercase; color: #aaa;
+      margin-top: 0.4rem;
+    }
+    .data-callout-body {
+      padding: 2rem 2.5rem; display: flex; flex-direction: column; justify-content: center;
+    }
+    .data-callout-body p {
+      font-family: 'DM Mono', monospace; font-size: 0.68rem;
+      letter-spacing: 0.04em; color: #bbb; line-height: 1.7;
+      margin-bottom: 0 !important;
+    }
+    .data-callout-body strong { color: #f0ede8; }
+
+    /* ─── OUTCOME TABLE ─── */
+    .outcome-table {
+      margin: 2.5rem 0; border: 1px solid #1e1e1e; width: 100%;
+    }
+    .outcome-row {
+      display: grid; grid-template-columns: 1fr auto auto;
+      border-bottom: 1px solid #1e1e1e; align-items: center;
+    }
+    .outcome-row:last-child { border-bottom: none; }
+    .outcome-row.header { background: #0d0d0d; }
+    .outcome-cell {
+      padding: 0.85rem 1.25rem;
+      font-family: 'DM Mono', monospace; font-size: 0.6rem;
+      letter-spacing: 0.06em; color: #aaa;
+      border-right: 1px solid #1e1e1e;
+    }
+    .outcome-cell:last-child { border-right: none; }
+    .outcome-row.header .outcome-cell {
+      font-size: 0.52rem; letter-spacing: 0.14em; text-transform: uppercase; color: #777;
+    }
+    .outcome-cell.disposition { color: #d8d5d0; }
+    .outcome-cell.count { text-align: right; color: #f0ede8; font-weight: 500; }
+    .outcome-cell.fine { text-align: right; color: #d4a843; }
+    .outcome-cell.red-text { color: #c0392b; }
+
+    /* ─── FOIA STATUS BOX ─── */
+    .foia-box {
+      margin: 2.5rem 0; border: 1px solid #2a2a2a; background: #0e0e0e;
+    }
+    .foia-box-header {
+      padding: 1rem 1.5rem; border-bottom: 1px solid #2a2a2a;
+      font-family: 'DM Mono', monospace; font-size: 0.55rem;
+      letter-spacing: 0.16em; text-transform: uppercase; color: #777;
+    }
+    .foia-row {
+      display: grid; grid-template-columns: 160px 1fr auto;
+      border-bottom: 1px solid #1e1e1e; align-items: center;
+    }
+    .foia-row:last-child { border-bottom: none; }
+    .foia-cell {
+      padding: 0.75rem 1.25rem;
+      font-family: 'DM Mono', monospace; font-size: 0.58rem;
+      letter-spacing: 0.04em; color: #aaa;
+      border-right: 1px solid #1e1e1e;
+    }
+    .foia-cell:last-child { border-right: none; }
+    .foia-cell.agency { color: #f0ede8; font-weight: 500; }
+    .foia-cell.status-open { color: #d4a843; }
+    .foia-cell.status-produced { color: #2a7a2a; }
+    .foia-cell.status-pending { color: #aaa; }
+
+    /* ─── SERIES NAV ─── */
+    .series-nav {
+      border-top: 1px solid #1e1e1e; padding-top: 3rem;
+      margin-top: 4rem;
+    }
+    .series-nav-label {
+      font-family: 'DM Mono', monospace; font-size: 0.55rem;
+      letter-spacing: 0.16em; text-transform: uppercase; color: #777;
+      margin-bottom: 1.25rem;
+    }
+    .series-nav-links { display: flex; gap: 0; border: 1px solid #1e1e1e; flex-wrap: wrap; }
+    .series-nav-link {
+      font-family: 'DM Mono', monospace; font-size: 0.6rem;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: #c0392b; text-decoration: none;
+      padding: 0.85rem 1.5rem; border-right: 1px solid #1e1e1e;
+      transition: background 0.2s, color 0.2s;
+    }
+    .series-nav-link:last-child { border-right: none; }
+    .series-nav-link:hover { background: #141414; color: #f0ede8; }
+    .series-nav-link.back { color: #aaa; }
+    .series-nav-link.back:hover { color: #f0ede8; }
+
+    /* ─── FOOTER ─── */
+    footer { background: #0a0a0a; border-top: 1px solid #1e1e1e; padding: 2.5rem; margin-top: 0; }
+    .footer-inner {
+      max-width: 1400px; margin: 0 auto;
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;
+    }
+    .footer-logo {
+      font-family: 'Playfair Display', serif; font-weight: 900;
+      font-size: 1rem; color: #f0ede8; text-decoration: none;
+    }
+    .footer-logo span { color: #c0392b; }
+    .footer-links { display: flex; gap: 2rem; align-items: center; }
+    .footer-links a {
+      font-family: 'DM Mono', monospace; font-size: 0.55rem;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: #777; text-decoration: none; transition: color 0.2s;
+    }
+    .footer-links a:hover { color: #f0ede8; }
+    .footer-copy {
+      font-family: 'DM Mono', monospace; font-size: 0.52rem;
+      letter-spacing: 0.1em; text-transform: uppercase; color: #666;
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 768px) {
+      .header-inner { padding: 0 1.25rem; }
+      nav a.hide-mobile { display: none; }
+      .article-hero-inner { padding: 3rem 1.25rem 2.5rem; }
+      .article-body { padding: 2.5rem 1.25rem 4rem; }
+      .stat-bar-inner { grid-template-columns: repeat(2, 1fr); }
+      .stat-cell:nth-child(2) { border-right: none; }
+      .data-callout { grid-template-columns: 1fr; }
+      .data-callout-val { border-right: none; border-bottom: 1px solid #2a1414; }
+      .outcome-row { grid-template-columns: 1fr auto; }
+      .outcome-cell.fine { display: none; }
+      .foia-row { grid-template-columns: 120px 1fr; }
+      .foia-cell:last-child { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-inner">
+      <a href="index.html" class="logo">Policy<span>Torque</span></a>
+      <nav>
+        <a href="index.html#articles" class="hide-mobile">Analysis</a>
+        <a href="index.html#articles" class="hide-mobile">Series</a>
+        <a href="index.html#about" class="hide-mobile">About</a>
+        <a href="index.html#contact" class="hide-mobile">Contact</a>
+        <a href="https://policytorque.beehiiv.com/subscribe" target="_blank" class="nav-subscribe">Subscribe</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ARTICLE HERO -->
+  <section class="article-hero">
+    <div class="hero-grid-bg"></div>
+    <div class="article-hero-inner">
+      <div class="article-eyebrow">Current Events · Civic Accountability</div>
+      <h1 class="article-title">$251 Million Out.<br><em>$2.67 Million Back.</em></h1>
+      <p class="article-deck">
+        The Chicago Transit Authority spent $251 million on private security contractors while its fare enforcement adjudication system produced $2.67 million in fines — 65% of them automatic default judgments against people who never showed up. The investigation, the contracts, the connected executives, and the board that authorized it retroactively.
+      </p>
+      <div class="article-meta">
+        <span>Apr 24, 2026</span>
+        <span>Michael Russo · PolicyTorque LLC</span>
+        <span>Current Events Series</span>
+        <span>Investigation Ongoing · 15 FOIAs Filed · 2 PAC Appeals</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- STAT BAR -->
+  <div class="stat-bar">
+    <div class="stat-bar-inner">
+      <div class="stat-cell">
+        <div class="stat-val red">$251M</div>
+        <div class="stat-lbl">Private security contracts · CTA · 2021–2025</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-val">$2.67M</div>
+        <div class="stat-lbl">Total fines assessed · DOAH adjudication · all fare evasion cases</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-val gold">65%</div>
+        <div class="stat-lbl">Default judgments · defendants who never appeared</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-val red">$26M</div>
+        <div class="stat-lbl">Contract overspend · board authorized retroactively · Oct 2024</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ARTICLE BODY -->
+  <article class="article-body">
+
+    <p>The question was simple enough. Does the Chicago Transit Authority's fare enforcement program generate enough revenue to justify what it costs? That question led to a procurement record, a FOIA request, a dataset of 11,043 adjudication cases, and a contractor whose co-founder is the brother of a convicted corrupt alderman.</p>
+
+    <p>The short answer: the entire administrative and adjudication output of CTA fare enforcement — every fine assessed, every default judgment entered, every case that went through the Department of Administrative Hearings — produced $2,669,348 in fines. In the same period, the CTA spent approximately $251 million on three private security contracts. The return on the enforcement apparatus is less than one percent of its cost.</p>
+
+    <p>That arithmetic is not the whole story. The whole story is what the money went to, who got it, who authorized it, and what happened when the board tried to clean up the mess two and a half years later.</p>
+
+    <h2 class="section-hed">The <em>Contracts</em></h2>
+
+    <h3 class="sub-hed">What the procurement record shows</h3>
+
+    <p>Three contracts account for the bulk of the CTA's private security spending. Monterrey Security Consultants received contract B21OP04714 for $44,307,824, followed by a supplemental B21OP04714B for an additional $3 million. Inter-Con Security received contract B21OP04714A for $56,250,000. Both contracts were executed the same day by the same CTA purchasing agent. Action K-9 Security Services received contract B22OP80021 for $55 million in August 2022, and contract B23OP80021 for $89.6 million in February 2025 — ten months before the FTA pressure campaign began in December 2025 following the Blue Line fire.</p>
+
+    <p>The combined contract values approach $251 million. The combined fine revenue from DOAH adjudication of fare evasion cases: $2.67 million.</p>
+
+    <div class="data-callout">
+      <div class="data-callout-val">
+        <div class="big">&lt;1%</div>
+        <div class="lbl">Enforcement ROI · fines vs. security contracts</div>
+      </div>
+      <div class="data-callout-body">
+        <p>The CTA's entire fare enforcement adjudication output — <strong>11,043 cases</strong> processed through the Department of Administrative Hearings — produced <strong>$2,669,348 in assessed fines</strong>. The three private security contracts it was meant to justify cost <strong>approximately $251 million</strong>. Fine revenue is less than one percent of contract cost. This is not a rounding error. It is the answer to the original question.</p>
+      </div>
+    </div>
+
+    <h2 class="section-hed">The Board <em>Authorization Gap</em></h2>
+
+    <h3 class="sub-hed">What the board voted for, and what was actually spent</h3>
+
+    <p>On March 9, 2022, the CTA board voted on Ordinance 022-034, authorizing the Monterrey and Inter-Con contracts. The board vote was unanimous, 6-0. The combined authorized amount: $71 million. The contracts were executed at a combined $97 million — $26 million over what the board approved.</p>
+
+    <p>The overspend began almost immediately. Ordinance 024-140, passed October 9, 2024 — two and a half years after the contracts were executed — retroactively authorized the additional $26 million. The ordinance language acknowledged what had happened: deployments had been "significantly increased" almost immediately upon contract execution, beyond what the original authorization covered.</p>
+
+    <p>A Change Order No. 1 existed but did not authorize additional funding. The details of that change order remain under FOIA review.</p>
+
+    <div class="pull-quote">
+      <p>"Almost immediately upon execution, deployments were significantly increased." — CTA Board Ordinance 024-140, October 9, 2024, retroactively authorizing $26 million in spending that had already occurred.</p>
+    </div>
+
+    <p>The June 2021 emergency Monterrey contract — $3 million — does not appear in any board ordinance from that period. A review of ordinances 021-049 through 021-075 produced no record of board authorization. That contract appears to have been executed administratively, under emergency authority, without a board vote. FOIAs for the emergency justification and the relationship to the subsequent $44 million contract are pending.</p>
+
+    <h2 class="section-hed">The Default <em>Judgment Machine</em></h2>
+
+    <h3 class="sub-hed">What the DOAH adjudication data shows</h3>
+
+    <p>The Department of Administrative Hearings produced 11,043 unique fare evasion cases under FOIA H135833-041326. The dataset covers the complete adjudication record for charge code 10-8-526/016-110-1.27(4): trespass by entering without paying the required fare.</p>
+
+    <p>65% of all dispositions were default judgments of $300 entered against defendants who did not appear at their hearing. Of the cases that were actually contested — where a defendant showed up — the city failed to establish a prima facie case in 1,092 instances. An administrative law judge ruled, in each of those cases, that the city could not meet even the basic burden of proof.</p>
+
+    <div class="outcome-table">
+      <div class="outcome-row header">
+        <div class="outcome-cell">Disposition</div>
+        <div class="outcome-cell count">Cases</div>
+        <div class="outcome-cell fine">Fine</div>
+      </div>
+      <div class="outcome-row">
+        <div class="outcome-cell disposition red-text">Default — Liable by prove-up (no-show)</div>
+        <div class="outcome-cell count">8,456</div>
+        <div class="outcome-cell fine">$300</div>
+      </div>
+      <div class="outcome-row">
+        <div class="outcome-cell disposition">City's motion to amend the charge — Granted</div>
+        <div class="outcome-cell count">1,904</div>
+        <div class="outcome-cell fine">$0 / varied</div>
+      </div>
+      <div class="outcome-row">
+        <div class="outcome-cell disposition red-text">Not liable — City failed to establish prima facie case</div>
+        <div class="outcome-cell count">1,092</div>
+        <div class="outcome-cell fine">$0</div>
+      </div>
+      <div class="outcome-row">
+        <div class="outcome-cell disposition">Liable — By plea</div>
+        <div class="outcome-cell count">587</div>
+        <div class="outcome-cell fine">$50</div>
+      </div>
+      <div class="outcome-row">
+        <div class="outcome-cell disposition">City non-suit (city dropped case)</div>
+        <div class="outcome-cell count">488</div>
+        <div class="outcome-cell fine">$0</div>
+      </div>
+    </div>
+
+    <p>The 1,904 charge amendment entries are structurally significant. In nearly one in six contested cases, the city arrived at the hearing and had to change what it was charging the defendant with. That pattern is consistent with the undefined "Other" arrest category in CPD data — a category that grew 444% between 2022 and 2024 and accounts for 77% of all 2024 CTA Transit Section arrests. Officers appear to be writing citations under a charge code that cannot survive adjudication as written.</p>
+
+    <p>The equity dimension of this data is direct. People who appeared at their hearings had a meaningful chance of winning. The city could not prove its case in roughly one in six contested proceedings. But most defendants did not appear. They received automatic $300 default judgments. The enforcement system's primary output is not fare compliance or revenue. It is default judgments against people who cannot navigate an administrative hearing process to contest a $300 fine.</p>
+
+    <h2 class="section-hed">Monterrey: <em>The Contractor</em></h2>
+
+    <h3 class="sub-hed">Who received $47 million in CTA public funds</h3>
+
+    <p>Monterrey Security Consultants was founded by Juan Gaytan, a former Chicago Police Department officer who resigned in 2002 following a 15-month suspension. The city of Chicago settled a federal lawsuit related to his conduct for $95,000. Monterrey's co-founder is Santiago Solis, the brother of Danny Solis, the 25th Ward alderman who pleaded guilty to federal corruption charges in 2023.</p>
+
+    <p>The company's executive roster includes Anthony Riccio, former CPD Chief of Patrol; Fred Waller, former CPD Area Central commander; and Hiram Grau, former Illinois State Police director. Prior to the CTA contracts, Monterrey had a $2.9 million city contract rescinded following an ethics violation finding, and was investigated by the FBI in connection with a no-bid Rosemont contract.</p>
+
+    <h3 class="sub-hed">Campaign contributions</h3>
+
+    <p>Illinois State Board of Elections records show Juan Gaytan and Monterrey Security made combined contributions totaling $306,621 across 255 transactions to Illinois political committees. George Cardenas, who chairs the City Council Transportation Committee — the committee with oversight jurisdiction over the CTA — received $3,500 from Gaytan in 2025 while the Monterrey contract was active. Mayor Brandon Johnson received $3,000 from Gaytan in July 2023. The 25th Ward Regular Democratic Organization received $6,000.</p>
+
+    <p>The most recent contribution in the records: $1,750 to the Rosemont Voters League, dated March 13, 2026 — five weeks before the CTA terminated the Monterrey contract.</p>
+
+    <h2 class="section-hed">The <em>Termination</em></h2>
+
+    <h3 class="sub-hed">A contract cancelled three weeks after it was renewed</h3>
+
+    <p>On April 18, 2026, the CTA terminated the Monterrey contract. The termination came approximately three weeks after the contract had been renewed for a one-year term through April 3, 2027. The CTA cited non-appropriation of funds — a budget-based termination clause — despite having just executed an affirmative renewal. Contract renewals are not automatic. Someone at the CTA signed the renewal.</p>
+
+    <p>The buyer of record on both the original Monterrey contracts and the Inter-Con contract was Iliana Linares, listed in CTA procurement records as General Manager of Purchasing. That role includes processing contract renewals. The sequence — renewal executed, then termination invoked three weeks later, citing lack of appropriated funds — is, at minimum, a procurement anomaly that warrants explanation.</p>
+
+    <p>Two NLRB unfair labor practice cases involving Monterrey Security and SEIU Local 1 were filed in March 2025 and dismissed in April 2025. Dismissal letters are pending production under FOIA 2026-NLFO-01071. The NLRB categorized PolicyTorque as a media organization and waived all fees.</p>
+
+    <h2 class="section-hed">The <em>Investigation</em></h2>
+
+    <h3 class="sub-hed">What has been filed and what is pending</h3>
+
+    <p>Fourteen FOIA requests have been filed across federal, state, and municipal agencies. The DOAH dataset has been produced and analyzed. Contract records were obtained through the city's public procurement portal. CTA board ordinances 022-034 and 024-140 were obtained and reviewed. Illinois State Board of Elections contribution data was analyzed. A complaint was filed with the Illinois Attorney General's Public Access Counselor regarding CPD's refusal to produce citation and arrest data in a form that identifies what the undefined "Other" arrest category contains.</p>
+
+    <div class="foia-box">
+      <div class="foia-box-header">Active FOIA Status — April 24, 2026</div>
+      <div class="foia-row">
+        <div class="foia-cell agency">CPD (P166396)</div>
+        <div class="foia-cell">Partial production — AG PAC complaint filed</div>
+        <div class="foia-cell status-open">AG Pending</div>
+      </div>
+      <div class="foia-row">
+        <div class="foia-cell agency">CPD (P169488)</div>
+        <div class="foia-cell">Extension — legal review — response due Apr 28</div>
+        <div class="foia-cell status-open">Apr 28</div>
+      </div>
+      <div class="foia-row">
+        <div class="foia-cell agency">DOAH (H135833)</div>
+        <div class="foia-cell">Produced — 11,043 cases analyzed</div>
+        <div class="foia-cell status-produced">Closed</div>
+      </div>
+      <div class="foia-row">
+        <div class="foia-cell agency">Cook Co. Sheriff</div>
+        <div class="foia-cell">Extension — consultation — response due Apr 27</div>
+        <div class="foia-cell status-open">Apr 27</div>
+      </div>
+      <div class="foia-row">
+        <div class="foia-cell agency">CTA</div>
+        <div class="foia-cell">Six supplemental requests filed — responses pending</div>
+        <div class="foia-cell status-pending">Pending</div>
+      </div>
+      <div class="foia-row">
+        <div class="foia-cell agency">Mayor's Office</div>
+        <div class="foia-cell">Undue burden extension — response due Apr 29</div>
+        <div class="foia-cell status-open">Apr 29</div>
+      </div>
+      <div class="foia-row">
+        <div class="foia-cell agency">Office of Budget</div>
+        <div class="foia-cell">Filed — response pending</div>
+        <div class="foia-cell status-pending">Pending</div>
+      </div>
+      <div class="foia-row">
+        <div class="foia-cell agency">NLRB (2026-NLFO-01071)</div>
+        <div class="foia-cell">Media status confirmed — dismissal letters in production</div>
+        <div class="foia-cell status-open">20 Bus. Days</div>
+      </div>
+      <div class="foia-row">
+        <div class="foia-cell agency">DPA FOIA (26-F-2034)</div>
+        <div class="foia-cell">DPA Title III records — Jervois cobalt refinery — deadline May 21</div>
+        <div class="foia-cell status-pending">May 21</div>
+      </div>
+    </div>
+
+    <p>This investigation is active. Records are still arriving. What is already in hand is sufficient to describe the core finding: a public transit authority spent $251 million on private security while generating $2.67 million in fare enforcement fines, contracted with a company whose founder resigned from CPD under suspension and whose co-founder is related to a convicted corrupt alderman, allowed that company's contracts to exceed board authorization by $26 million before seeking retroactive approval, and then terminated a contract three weeks after renewing it.</p>
+
+    <p>The questions that remain are how the overspend was authorized at the operational level, what the Change Order No. 1 actually did, and why the contract renewal and termination happened in the sequence they did. Those questions are pending production.</p>
+
+    <p style="color:#777; font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.08em; margin-top:3rem; padding-top:1.5rem; border-top:1px solid #1e1e1e;">
+      Michael Russo is the founder of PolicyTorque LLC. He is an independent policy researcher and journalist. He has no financial interest in any entity named in this article. Primary source documents supporting this analysis are available upon request. Contact: michael@policytorque.com
+    </p>
+
+    <!-- SERIES NAV -->
+    <div class="series-nav">
+      <div class="series-nav-label">Current Events Series</div>
+      <div class="series-nav-links">
+        <a href="index.html" class="series-nav-link back">← All Series</a>
+        <a href="iran-won-trump-lost.html" class="series-nav-link">Apr 9 · Iran Won. Trump Lost.</a>
+        <a href="dod-1point5t-hegseth.html" class="series-nav-link">Apr 18 · So the DOD Wants $1.5 Trillion.</a>
+        <a href="cta-transit-enforcement.html" class="series-nav-link" style="background:#0f0a0a;">Apr 24 · $251M Out. $2.67M Back. ←</a>
+        <a href="cta-enforcement-audit.html" class="series-nav-link" style="color:#c0392b;">↗ Live Investigation Dashboard</a>
+      </div>
+    </div>
+
+  </article>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <a href="index.html" class="footer-logo">Policy<span>Torque</span></a>
+      <div class="footer-links">
+        <a href="index.html#articles">Analysis</a>
+        <a href="index.html#articles">Series</a>
+        <a href="https://policytorque.beehiiv.com/subscribe" target="_blank">Subscribe</a>
+        <a href="https://linkedin.com/in/michael-f-russo" target="_blank">LinkedIn</a>
+      </div>
+      <div class="footer-copy">© 2026 PolicyTorque · Detroit, MI</div>
+    </div>
+  </footer>
+
+</body>
+</html>
