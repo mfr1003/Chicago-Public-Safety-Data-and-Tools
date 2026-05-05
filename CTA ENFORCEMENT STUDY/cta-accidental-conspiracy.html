@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Accidental Conspiracy  -  PolicyTorque</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700;1,900&family=DM+Mono:wght@400;500&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: #0a0a0a;
+      color: #f0ede8;
+      font-family: 'Lora', Georgia, serif;
+      font-size: 18px;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* HEADER */
+    header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      border-bottom: 1px solid #1e1e1e;
+      background: rgba(10,10,10,0.97);
+      backdrop-filter: blur(16px);
+    }
+    .header-inner {
+      max-width: 1400px; margin: 0 auto; padding: 0 2.5rem;
+      height: 64px; display: flex; align-items: center; justify-content: space-between;
+    }
+    .logo {
+      font-family: 'Playfair Display', serif; font-weight: 900; font-size: 1.45rem;
+      color: #f0ede8; text-decoration: none; letter-spacing: -0.02em;
+    }
+    .logo span { color: #c0392b; }
+    nav { display: flex; align-items: center; gap: 2rem; }
+    nav a {
+      font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.14em;
+      text-transform: uppercase; color: #aaa; text-decoration: none; transition: color 0.2s;
+    }
+    nav a:hover { color: #f0ede8; }
+    .nav-subscribe {
+      background: #c0392b; color: #fff !important;
+      padding: 0.5rem 1.1rem; letter-spacing: 0.1em;
+    }
+    .nav-subscribe:hover { background: #a93226; }
+
+    /* HERO */
+    .article-hero {
+      padding-top: 64px;
+      border-bottom: 1px solid #1e1e1e;
+      position: relative; overflow: hidden;
+    }
+    .article-hero::before {
+      content: '';
+      position: absolute; top: 64px; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, #c0392b, transparent);
+    }
+    .hero-grid-bg {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(#1e1e1e 1px, transparent 1px),
+        linear-gradient(90deg, #1e1e1e 1px, transparent 1px);
+      background-size: 80px 80px;
+      opacity: 0.2;
+      pointer-events: none;
+    }
+    .article-hero-inner {
+      max-width: 900px; margin: 0 auto; padding: 4rem 2.5rem 3.5rem;
+      position: relative; z-index: 1;
+    }
+    .article-eyebrow {
+      font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.2em;
+      text-transform: uppercase; color: #c0392b; margin-bottom: 1.5rem;
+      display: flex; align-items: center; gap: 1rem;
+    }
+    .article-eyebrow::before { content: ''; display: block; width: 32px; height: 2px; background: #c0392b; }
+    .article-title {
+      font-family: 'Playfair Display', serif; font-weight: 900;
+      font-size: clamp(2.8rem, 6vw, 5.5rem);
+      line-height: 0.95; letter-spacing: -0.04em;
+      color: #f0ede8; margin-bottom: 1.75rem;
+    }
+    .article-title em { font-style: italic; color: #c0392b; }
+    .article-deck {
+      font-family: 'Lora', serif; font-size: 1.15rem; color: #bbb;
+      line-height: 1.75; margin-bottom: 2.5rem;
+      border-left: 2px solid #c0392b; padding-left: 1.5rem;
+    }
+    .article-meta {
+      font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.12em;
+      text-transform: uppercase; color: #777;
+      display: flex; gap: 2rem; flex-wrap: wrap;
+      padding-top: 1.5rem; border-top: 1px solid #1e1e1e;
+    }
+    .article-meta span { color: #aaa; }
+
+    /* STAT BAR */
+    .stat-bar { background: #0d0d0d; border-bottom: 1px solid #1e1e1e; }
+    .stat-bar-inner {
+      max-width: 900px; margin: 0 auto; padding: 0 2.5rem;
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      border-left: 1px solid #1e1e1e; border-right: 1px solid #1e1e1e;
+    }
+    .stat-cell {
+      padding: 1.75rem 1.5rem; border-right: 1px solid #1e1e1e;
+      display: flex; flex-direction: column; gap: 0.35rem;
+    }
+    .stat-cell:last-child { border-right: none; }
+    .stat-val {
+      font-family: 'Playfair Display', serif; font-weight: 900;
+      font-size: 2rem; line-height: 1; letter-spacing: -0.03em; color: #f0ede8;
+    }
+    .stat-val.red { color: #c0392b; }
+    .stat-val.gold { color: #d4a843; }
+    .stat-lbl {
+      font-family: 'DM Mono', monospace; font-size: 0.52rem;
+      letter-spacing: 0.1em; text-transform: uppercase; color: #777;
+      line-height: 1.5;
+    }
+
+    /* BODY */
+    .article-body {
+      max-width: 900px; margin: 0 auto; padding: 3.5rem 2.5rem 5rem;
+    }
+    .article-body p {
+      margin-bottom: 1.6rem; color: #d8d5d0; line-height: 1.8;
+    }
+    .article-body p:first-child { color: #f0ede8; font-size: 1.1rem; }
+
+    h2.section-hed {
+      font-family: 'Playfair Display', serif; font-weight: 900;
+      font-size: 1.6rem; letter-spacing: -0.025em; color: #f0ede8;
+      margin: 3.5rem 0 1.25rem; line-height: 1.2;
+    }
+    h2.section-hed em { font-style: italic; color: #c0392b; }
+
+    h3.sub-hed {
+      font-family: 'DM Mono', monospace; font-size: 0.65rem;
+      letter-spacing: 0.16em; text-transform: uppercase; color: #c0392b;
+      margin: 2.5rem 0 0.85rem;
+    }
+
+    .pull-quote {
+      margin: 2.5rem 0; padding: 2rem 2.5rem;
+      border-left: 3px solid #c0392b; background: #0f0a0a;
+    }
+    .pull-quote p {
+      font-family: 'Playfair Display', serif; font-style: italic;
+      font-size: 1.25rem; line-height: 1.5; color: #f0ede8 !important;
+      margin-bottom: 0 !important;
+    }
+
+    .data-callout {
+      margin: 2.5rem 0;
+      border: 1px solid #2a1414; background: #0d0808;
+      display: grid; grid-template-columns: auto 1fr;
+    }
+    .data-callout-val {
+      padding: 2rem 2.5rem; border-right: 1px solid #2a1414;
+      display: flex; flex-direction: column; justify-content: center;
+      background: #0f0a0a; min-width: 200px;
+    }
+    .data-callout-val .big {
+      font-family: 'Playfair Display', serif; font-weight: 900;
+      font-size: 2.8rem; line-height: 1; letter-spacing: -0.04em; color: #c0392b;
+    }
+    .data-callout-val .lbl {
+      font-family: 'DM Mono', monospace; font-size: 0.52rem;
+      letter-spacing: 0.1em; text-transform: uppercase; color: #aaa;
+      margin-top: 0.4rem;
+    }
+    .data-callout-body {
+      padding: 2rem 2.5rem; display: flex; flex-direction: column; justify-content: center;
+    }
+    .data-callout-body p {
+      font-family: 'DM Mono', monospace; font-size: 0.68rem;
+      letter-spacing: 0.04em; color: #bbb; line-height: 1.7;
+      margin-bottom: 0 !important;
+    }
+    .data-callout-body strong { color: #f0ede8; }
+
+    /* collection rate table */
+    .rate-table {
+      margin: 2.5rem 0; border: 1px solid #1e1e1e; width: 100%;
+    }
+    .rate-row {
+      display: grid; grid-template-columns: 80px 1fr auto auto;
+      border-bottom: 1px solid #1e1e1e; align-items: center;
+    }
+    .rate-row:last-child { border-bottom: none; }
+    .rate-row.header { background: #0d0d0d; }
+    .rate-cell {
+      padding: 0.75rem 1.25rem;
+      font-family: 'DM Mono', monospace; font-size: 0.6rem;
+      letter-spacing: 0.06em; color: #aaa;
+      border-right: 1px solid #1e1e1e;
+    }
+    .rate-cell:last-child { border-right: none; }
+    .rate-row.header .rate-cell {
+      font-size: 0.52rem; letter-spacing: 0.14em; text-transform: uppercase; color: #777;
+    }
+    .rate-cell.year { color: #f0ede8; font-weight: 500; }
+    .rate-cell.num { text-align: right; }
+    .rate-cell.rate { text-align: right; }
+    .rate-cell.bar-cell { padding: 0.75rem 1rem; }
+    .rate-bar-wrap { height: 8px; background: #1e1e1e; border-radius: 2px; position: relative; }
+    .rate-bar-fill { height: 100%; border-radius: 2px; background: #c0392b; }
+
+    /* ventra callout */
+    .ventra-box {
+      margin: 2.5rem 0;
+      border: 1px solid #1a3a1a; background: #080f08;
+      padding: 2rem 2.5rem;
+    }
+    .ventra-label {
+      font-family: 'DM Mono', monospace; font-size: 0.55rem;
+      letter-spacing: 0.2em; text-transform: uppercase; color: #2a7a2a;
+      margin-bottom: 1.25rem;
+    }
+    .ventra-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;
+    }
+    .ventra-item { display: flex; flex-direction: column; gap: 4px; }
+    .ventra-num {
+      font-family: 'Playfair Display', serif; font-weight: 900;
+      font-size: 1.6rem; letter-spacing: -0.03em; color: #5de89a; line-height: 1;
+    }
+    .ventra-desc {
+      font-family: 'DM Mono', monospace; font-size: 0.55rem;
+      letter-spacing: 0.08em; color: #4a7a5a; line-height: 1.5;
+    }
+
+    /* series nav */
+    .series-nav {
+      border-top: 1px solid #1e1e1e; padding-top: 3rem;
+      margin-top: 4rem;
+    }
+    .series-nav-label {
+      font-family: 'DM Mono', monospace; font-size: 0.55rem;
+      letter-spacing: 0.16em; text-transform: uppercase; color: #777;
+      margin-bottom: 1.25rem;
+    }
+    .series-nav-links { display: flex; gap: 0; border: 1px solid #1e1e1e; flex-wrap: wrap; }
+    .series-nav-link {
+      font-family: 'DM Mono', monospace; font-size: 0.6rem;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: #c0392b; text-decoration: none;
+      padding: 0.85rem 1.5rem; border-right: 1px solid #1e1e1e;
+      transition: background 0.2s, color 0.2s;
+    }
+    .series-nav-link:last-child { border-right: none; }
+    .series-nav-link:hover { background: #141414; color: #f0ede8; }
+    .series-nav-link.back { color: #aaa; }
+    .series-nav-link.back:hover { color: #f0ede8; }
+
+    /* footer */
+    footer { background: #0a0a0a; border-top: 1px solid #1e1e1e; padding: 2.5rem; }
+    .footer-inner {
+      max-width: 1400px; margin: 0 auto;
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;
+    }
+    .footer-logo {
+      font-family: 'Playfair Display', serif; font-weight: 900;
+      font-size: 1rem; color: #f0ede8; text-decoration: none;
+    }
+    .footer-logo span { color: #c0392b; }
+    .footer-links { display: flex; gap: 2rem; }
+    .footer-links a {
+      font-family: 'DM Mono', monospace; font-size: 0.55rem;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: #777; text-decoration: none; transition: color 0.2s;
+    }
+    .footer-links a:hover { color: #f0ede8; }
+    .footer-copy {
+      font-family: 'DM Mono', monospace; font-size: 0.52rem;
+      letter-spacing: 0.1em; text-transform: uppercase; color: #666;
+    }
+
+    @media (max-width: 768px) {
+      .header-inner { padding: 0 1.25rem; }
+      nav a.hide-mobile { display: none; }
+      .article-hero-inner, .article-body { padding-left: 1.25rem; padding-right: 1.25rem; }
+      .stat-bar-inner { grid-template-columns: repeat(2, 1fr); }
+      .stat-cell:nth-child(2) { border-right: none; }
+      .data-callout { grid-template-columns: 1fr; }
+      .data-callout-val { border-right: none; border-bottom: 1px solid #2a1414; }
+      .ventra-grid { grid-template-columns: 1fr; }
+      .rate-row { grid-template-columns: 60px 1fr auto; }
+      .rate-cell.bar-cell { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="index.html" class="logo">Policy<span>Torque</span></a>
+    <nav>
+      <a href="index.html#articles" class="hide-mobile">Analysis</a>
+      <a href="index.html#articles" class="hide-mobile">Series</a>
+      <a href="index.html#about" class="hide-mobile">About</a>
+      <a href="index.html#contact" class="hide-mobile">Contact</a>
+      <a href="https://policytorque.beehiiv.com/subscribe" target="_blank" class="nav-subscribe">Subscribe</a>
+    </nav>
+  </div>
+</header>
+
+<section class="article-hero">
+  <div class="hero-grid-bg"></div>
+  <div class="article-hero-inner">
+    <div class="article-eyebrow">Current Events · Civic Accountability · CTA Investigation Part II</div>
+    <h1 class="article-title">The <em>Accidental</em><br>Conspiracy</h1>
+    <p class="article-deck">
+      I filed a FOIA request to impress a newsroom. I wanted to show Chicago Public Media and WBEZ that an engineer from Troy, Michigan could do data journalism. What I found instead was $251 million in contracts, $26,148.57 in collections, and 63,862 people with debt following them. This is what the Department of Finance produced when I asked a simple question nobody had thought to ask.
+    </p>
+    <div class="article-meta">
+      <span>May 4, 2026</span>
+      <span>Michael Russo · PolicyTorque LLC</span>
+      <span>Current Events Series · Part II</span>
+      <span>13 FOIAs · 2 PAC Appeals · 2 PAC Appeals · Investigation Ongoing</span>
+    </div>
+  </div>
+</section>
+
+<div class="stat-bar">
+  <div class="stat-bar-inner">
+    <div class="stat-cell">
+      <div class="stat-val red">$26,148</div>
+      <div class="stat-lbl">Actual cash collected · fare evasion · all years</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-val">0.98%</div>
+      <div class="stat-lbl">Collection rate · fare evasion · declining every year</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-val gold">63,862</div>
+      <div class="stat-lbl">People referred to a collection firm · debt still growing</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-val red">0.32%</div>
+      <div class="stat-lbl">2025 collection rate · peak enforcement year</div>
+    </div>
+  </div>
+</div>
+
+<article class="article-body">
+
+  <p>Three weeks ago I filed a Freedom of Information Act request with the Chicago Department of Administrative Hearings. I was trying to answer a simple question: does the CTA's fare enforcement program generate enough revenue to justify what it costs? I was also, if I am being honest, trying to produce something impressive enough that Chicago Public Media or WBEZ might notice that an engineer in Troy, Michigan knew how to work with public data.</p>
+
+  <p>The DOAH produced 11,043 adjudicated fare evasion cases. The analysis showed $2,669,348 in total fines assessed  -  against $251 million in private security contracts. That finding, published here on April 24, was damning enough. Less than one percent return on a quarter-billion dollar enforcement apparatus.</p>
+
+  <p>I kept pulling the thread.</p>
+
+  <p>On May 4, the City of Chicago Department of Finance responded to a follow-up FOIA request with a dataset covering 67,046 transit citation cases. It shows what the enforcement system actually collected in cash  -  not what it assessed, not what it adjudicated, but what it actually received.</p>
+
+  <p>The number is $26,148.57.</p>
+
+  <h2 class="section-hed">What the <em>Finance Data</em> Shows</h2>
+
+  <h3 class="sub-hed">Assessed vs. collected  -  a critical distinction</h3>
+
+  <p>The DOAH data showed what administrative law judges imposed. The Finance data shows what the city actually received. Those two numbers are very different things, and the distance between them is the story.</p>
+
+  <div class="data-callout">
+    <div class="data-callout-val">
+      <div class="big">0.98%</div>
+      <div class="lbl">Fare evasion collection rate</div>
+    </div>
+    <div class="data-callout-body">
+      <p>The Department of Finance collected <strong>$26,148.57</strong> in cash from fare evasion enforcement across all years on record. The Department of Administrative Hearings assessed <strong>$2,669,348</strong> in fines across 11,043 cases. The city collected less than one cent for every dollar it imposed. Against <strong>$251 million</strong> in private security contracts, fare evasion enforcement returned 0.01% of its cost in actual revenue.</p>
+    </div>
+  </div>
+
+  <p>The collection rate was not always this low. It was always low. But it has collapsed in direct proportion to the enforcement surge. As the CTA spent more on private security and CPD Transit Section arrests climbed 331% between 2022 and 2025, the fraction of fines actually collected fell by more than half.</p>
+
+  <h3 class="sub-hed">The collection rate by year</h3>
+
+  <div class="rate-table">
+    <div class="rate-row header">
+      <div class="rate-cell">Year</div>
+      <div class="rate-cell num">Fines Levied</div>
+      <div class="rate-cell rate">Collection Rate</div>
+      <div class="rate-cell bar-cell"></div>
+    </div>
+    <div class="rate-row">
+      <div class="rate-cell year">2018</div>
+      <div class="rate-cell num">$221,400</div>
+      <div class="rate-cell rate" style="color:#d4a843">2.57%</div>
+      <div class="rate-cell bar-cell"><div class="rate-bar-wrap"><div class="rate-bar-fill" style="width:100%"></div></div></div>
+    </div>
+    <div class="rate-row">
+      <div class="rate-cell year">2019</div>
+      <div class="rate-cell num">$321,640</div>
+      <div class="rate-cell rate" style="color:#d4a843">1.85%</div>
+      <div class="rate-cell bar-cell"><div class="rate-bar-wrap"><div class="rate-bar-fill" style="width:86%"></div></div></div>
+    </div>
+    <div class="rate-row">
+      <div class="rate-cell year">2020</div>
+      <div class="rate-cell num">$113,770</div>
+      <div class="rate-cell rate" style="color:#c0922b">0.32%</div>
+      <div class="rate-cell bar-cell"><div class="rate-bar-wrap"><div class="rate-bar-fill" style="width:61%"></div></div></div>
+    </div>
+    <div class="rate-row">
+      <div class="rate-cell year">2021</div>
+      <div class="rate-cell num">$118,450</div>
+      <div class="rate-cell rate" style="color:#c0922b">0.27%</div>
+      <div class="rate-cell bar-cell"><div class="rate-bar-wrap"><div class="rate-bar-fill" style="width:57%"></div></div></div>
+    </div>
+    <div class="rate-row">
+      <div class="rate-cell year">2022</div>
+      <div class="rate-cell num">$107,050</div>
+      <div class="rate-cell rate" style="color:#c0922b">1.17%</div>
+      <div class="rate-cell bar-cell"><div class="rate-bar-wrap"><div class="rate-bar-fill" style="width:45%"></div></div></div>
+    </div>
+    <div class="rate-row">
+      <div class="rate-cell year">2023</div>
+      <div class="rate-cell num">$377,385</div>
+      <div class="rate-cell rate" style="color:#c07030">1.12%</div>
+      <div class="rate-cell bar-cell"><div class="rate-bar-wrap"><div class="rate-bar-fill" style="width:37%"></div></div></div>
+    </div>
+    <div class="rate-row">
+      <div class="rate-cell year">2024</div>
+      <div class="rate-cell num">$524,620</div>
+      <div class="rate-cell rate" style="color:#c0392b">0.60%</div>
+      <div class="rate-cell bar-cell"><div class="rate-bar-wrap"><div class="rate-bar-fill" style="width:19%"></div></div></div>
+    </div>
+    <div class="rate-row">
+      <div class="rate-cell year">2025</div>
+      <div class="rate-cell num">$691,340</div>
+      <div class="rate-cell rate" style="color:#c0392b">0.52%</div>
+      <div class="rate-cell bar-cell"><div class="rate-bar-wrap"><div class="rate-bar-fill" style="width:11%"></div></div></div>
+    </div>
+  </div>
+
+  <p>2025 was the peak enforcement year  -  18,040 ANOVs issued, the highest on record. It was also the worst collection year on record. The more aggressively the city enforced, the less it collected. The relationship between enforcement intensity and fiscal return is not just weak. It is inverse.</p>
+
+  <h2 class="section-hed">The <em>Debt Machine</em></h2>
+
+  <h3 class="sub-hed">What happens after the fine</h3>
+
+  <p>95.3% of all transit citation cases in the Finance dataset  -  63,862 of 67,046  -  were referred to a collection firm. The city gave up on collecting through its own mechanisms and handed the debt to a third party.</p>
+
+  <p>Those 63,862 people did not stop owing money when the city stopped being able to collect it. The debt followed them. A $300 fare evasion fine, once referred to a collection firm, becomes $650 or more with stacked administrative fees and accruing interest. It appears on credit reports. It affects the ability to rent an apartment, secure a job that runs a credit check, or open a bank account.</p>
+
+  <div class="pull-quote">
+    <p>The city collected $26,148.57 in cash. 63,862 people are still carrying the debt. Those are not the same outcome dressed differently. They are opposite outcomes. The city got nothing. The people got everything.</p>
+  </div>
+
+  <p>Cross-referencing the Finance dataset against the DOAH adjudication records reveals the composition of those 63,862 cases. 96.5% are default judgments  -  people who never appeared at their hearing. People who, had they appeared, would have faced a city that could not establish a prima facie case in one of every six contested proceedings and had to amend the charge in nearly one of every six others.</p>
+
+  <p>The people now carrying $650 balances to a collection firm largely never knew they had a case to make. The $300 default judgment arrived, they did not respond, and the debt machinery engaged. The city collected nothing. The debt remains.</p>
+
+  <h3 class="sub-hed">The alternative math</h3>
+
+  <p>For $251 million, the CTA could have given every person ever adjudicated for fare evasion a free monthly unlimited Ventra pass  -  all 11,043 of them  -  and had $249,998,309 left over. It could have given a free monthly pass to every one of the 63,862 people currently in collections for $6.7 million, saving $244 million. For the full contract cost, it could have eliminated fares entirely on the CTA for nearly five months.</p>
+
+  <div class="ventra-box">
+    <div class="ventra-label">The Ventra Calculation  -  $251M Alternatives</div>
+    <div class="ventra-grid">
+      <div class="ventra-item">
+        <div class="ventra-num">100,463,130</div>
+        <div class="ventra-desc">Free single rides at $2.50 each  -  nearly half a year of free CTA service for every rider</div>
+      </div>
+      <div class="ventra-item">
+        <div class="ventra-num">2,391,979</div>
+        <div class="ventra-desc">Free monthly unlimited passes  -  nearly one per Chicago resident</div>
+      </div>
+      <div class="ventra-item">
+        <div class="ventra-num">$1,159,515</div>
+        <div class="ventra-desc">Cost to give every adjudicated fare evader a free monthly pass  -  saving $249,998,309</div>
+      </div>
+      <div class="ventra-item">
+        <div class="ventra-num">$6,705,510</div>
+        <div class="ventra-desc">Cost to give every person in collections a free monthly pass  -  saving $244,452,314</div>
+      </div>
+    </div>
+  </div>
+
+  <p>These are not rhetorical numbers. They are the arithmetic of a policy choice. The CTA chose enforcement. The Finance data documents what enforcement produced: $26,148.57 in cash, 63,862 people with growing debt, and a collection rate that fell to 0.32% in the year enforcement peaked.</p>
+
+  <p>I did not set out to find this. I was trying to get a job. The data answered a question I almost didn't think to ask, and it keeps answering it the same way no matter how I run the numbers.</p>
+
+  <p>The full investigation  -  contracts, procurement records, board authorization gap, contractor background, and adjudication data  -  is at <a href="cta-transit-enforcement.html" style="color:#c0392b">policytorque.com/cta-transit-enforcement</a>. The live FOIA tracking dashboard is at <a href="cta-enforcement-audit.html" style="color:#c0392b">policytorque.com/cta-enforcement-audit</a>. Fifteen FOIAs remain active. The CTA has not yet produced board and staff communications regarding the contract authorization, the $26 million overspend, or the March 2026 renewal and April 2026 termination.</p>
+
+  <p style="color:#777; font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.08em; margin-top:3rem; padding-top:1.5rem; border-top:1px solid #1e1e1e;">
+    Michael Russo is the founder of PolicyTorque LLC. He is an independent policy researcher and journalist. He has no financial interest in any entity named in this article. Primary source documents are available upon request. Contact: michael@policytorque.com · 248-930-0117
+  </p>
+
+  <div class="series-nav">
+    <div class="series-nav-label">Current Events Series  -  CTA Investigation</div>
+    <div class="series-nav-links">
+      <a href="index.html" class="series-nav-link back">← All Series</a>
+      <a href="iran-won-trump-lost.html" class="series-nav-link">Apr 9 · Iran Won. Trump Lost.</a>
+      <a href="dod-1point5t-hegseth.html" class="series-nav-link">Apr 18 · So the DOD Wants $1.5 Trillion.</a>
+      <a href="cta-transit-enforcement.html" class="series-nav-link">Apr 24 · $251M Out. $2,669,348 Back.</a>
+      <a href="cta-accidental-conspiracy.html" class="series-nav-link" style="background:#0f0a0a;">May 4 · The Accidental Conspiracy ←</a>
+      <a href="cta-enforcement-audit.html" class="series-nav-link" style="color:#c0392b;">↗ Live Dashboard</a>
+    </div>
+  </div>
+
+</article>
+
+<footer>
+  <div class="footer-inner">
+    <a href="index.html" class="footer-logo">Policy<span>Torque</span></a>
+    <div class="footer-links">
+      <a href="index.html#articles">Analysis</a>
+      <a href="index.html#articles">Series</a>
+      <a href="https://policytorque.beehiiv.com/subscribe" target="_blank">Subscribe</a>
+      <a href="https://linkedin.com/in/michael-f-russo" target="_blank">LinkedIn</a>
+    </div>
+    <div class="footer-copy">© 2026 PolicyTorque · Detroit, MI</div>
+  </div>
+</footer>
+
+</body>
+</html>
