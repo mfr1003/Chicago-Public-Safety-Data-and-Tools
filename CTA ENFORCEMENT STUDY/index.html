@@ -1,0 +1,1352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PolicyTorque — Engineering Meets Policy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700;1,900&family=DM+Mono:wght@400;500&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: #0a0a0a;
+      color: #f0ede8;
+      font-family: 'Lora', Georgia, serif;
+      font-size: 18px;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ─── HEADER ─── */
+    header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      border-bottom: 1px solid #1e1e1e;
+      background: rgba(10,10,10,0.97);
+      backdrop-filter: blur(16px);
+    }
+    .header-inner {
+      max-width: 1400px; margin: 0 auto; padding: 0 2.5rem;
+      height: 64px; display: flex; align-items: center; justify-content: space-between;
+    }
+    .logo {
+      font-family: 'Playfair Display', serif; font-weight: 900; font-size: 1.45rem;
+      color: #f0ede8; text-decoration: none; letter-spacing: -0.02em;
+    }
+    .logo span { color: #c0392b; }
+    nav { display: flex; align-items: center; gap: 2.5rem; margin-left: 3rem; }
+    nav a {
+      font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.14em;
+      text-transform: uppercase; color: #aaa; text-decoration: none; transition: color 0.2s;
+    }
+    nav a:hover { color: #f0ede8; }
+    .nav-subscribe {
+      background: #c0392b; color: #fff !important;
+      padding: 0.5rem 1.1rem; letter-spacing: 0.1em;
+    }
+    .nav-subscribe:hover { background: #a93226; color: #fff !important; }
+
+    /* ─── HERO ─── */
+    .hero {
+      display: flex; flex-direction: column; justify-content: center;
+      border-bottom: 1px solid #1e1e1e;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-grid-bg {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(#1e1e1e 1px, transparent 1px),
+        linear-gradient(90deg, #1e1e1e 1px, transparent 1px);
+      background-size: 80px 80px;
+      opacity: 0.3;
+      pointer-events: none;
+    }
+    .hero-inner {
+      max-width: 1400px; margin: 0 auto; padding: 1.5rem 2.5rem 3rem;
+      position: relative; z-index: 1;
+    }
+    .hero-eyebrow {
+      font-family: 'DM Mono', monospace; font-size: 1rem; letter-spacing: 0.2em;
+      text-transform: uppercase; color: #c0392b; margin-bottom: 1.5rem;
+      display: flex; align-items: center; gap: 1rem;
+    }
+    .hero-eyebrow::before { content: ''; display: block; width: 48px; height: 2px; background: #c0392b; }
+    .hero-title {
+      font-family: 'Playfair Display', serif; font-weight: 900;
+      font-size: clamp(3.5rem, 8vw, 7.5rem);
+      line-height: 0.95; letter-spacing: -0.04em;
+      color: #f0ede8; margin-bottom: 3rem; max-width: 900px;
+    }
+    .hero-title em { font-style: italic; color: #c0392b; }
+    .hero-deck {
+      font-family: 'Lora', serif; font-size: 1.15rem; color: #bbb;
+      max-width: 560px; line-height: 1.75; margin-bottom: 4rem;
+    }
+    .hero-deck strong { color: #f0ede8; }
+
+    /* ─── THREE CTAs ─── */
+    .cta-trio {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      border: 1px solid #2a2a2a; max-width: 1100px;
+    }
+    .cta-block {
+      padding: 2rem 2rem 2rem;
+      border-right: 1px solid #2a2a2a;
+      display: flex; flex-direction: column; gap: 0.75rem;
+      transition: background 0.2s;
+    }
+    .cta-block:last-child { border-right: none; }
+    .cta-block:hover { background: #141414; }
+    .cta-number {
+      font-family: 'DM Mono', monospace; font-size: 0.55rem;
+      letter-spacing: 0.18em; text-transform: uppercase; color: #777;
+    }
+    .cta-label {
+      font-family: 'Playfair Display', serif; font-weight: 700;
+      font-size: 1.05rem; color: #f0ede8; line-height: 1.3;
+    }
+    .cta-sub {
+      font-family: 'DM Mono', monospace; font-size: 0.6rem;
+      letter-spacing: 0.06em; color: #aaa; line-height: 1.6;
+    }
+    .cta-action {
+      margin-top: auto; padding-top: 1rem;
+      font-family: 'DM Mono', monospace; font-size: 0.6rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      text-decoration: none; transition: color 0.2s;
+    }
+    .cta-action.red { color: #c0392b; }
+    .cta-action.gold { color: #d4a843; }
+    .cta-action.white { color: #aaa; }
+    .cta-action:hover { color: #f0ede8 !important; }
+
+    /* ─── SECTION CHROME ─── */
+    .section-wrap { max-width: 1400px; margin: 0 auto; padding: 5rem 2.5rem; }
+    .section-header {
+      display: flex; align-items: baseline; gap: 1.5rem;
+      margin-bottom: 3rem; padding-bottom: 1.25rem;
+      border-bottom: 1px solid #1e1e1e;
+    }
+    .section-title {
+      font-family: 'Playfair Display', serif; font-weight: 900;
+      font-size: 1.1rem; color: #f0ede8; letter-spacing: -0.01em;
+    }
+    .section-tag {
+      font-family: 'DM Mono', monospace; font-size: 0.55rem;
+      letter-spacing: 0.14em; text-transform: uppercase; color: #777;
+    }
+
+    /* ─── LATEST PIECE (FULL WIDTH FEATURE) ─── */
+    #latest { border-bottom: 1px solid #1e1e1e; }
+    .feature-card {
+      display: grid; grid-template-columns: 1fr 1fr;
+      border: 1px solid #1e1e1e; background: #0e0e0e;
+      transition: background 0.2s; cursor: pointer;
+    }
+    .feature-card:hover { background: #141414; }
+    .feature-card-meta {
+      padding: 3.5rem; border-right: 1px solid #1e1e1e;
+      display: flex; flex-direction: column; justify-content: space-between;
+    }
+    .feature-card-body { padding: 3.5rem; display: flex; flex-direction: column; justify-content: center; }
+    .feature-label {
+      font-family: 'DM Mono', monospace; font-size: 0.58rem;
+      letter-spacing: 0.16em; text-transform: uppercase;
+      color: #c0392b; margin-bottom: 1.5rem;
+      display: flex; align-items: center; gap: 0.75rem;
+    }
+    .feature-label::before { content: ''; display: block; width: 20px; height: 1px; background: #c0392b; }
+    .feature-title {
+      font-family: 'Playfair Display', serif; font-weight: 900;
+      font-size: clamp(1.8rem, 3vw, 2.8rem);
+      line-height: 1.1; letter-spacing: -0.03em;
+      color: #f0ede8; margin-bottom: 0;
+    }
+    .feature-date {
+      font-family: 'DM Mono', monospace; font-size: 0.58rem;
+      letter-spacing: 0.1em; text-transform: uppercase; color: #777;
+    }
+    .feature-excerpt {
+      font-family: 'Lora', serif; font-size: 1rem;
+      color: #aaa; line-height: 1.8; margin-bottom: 2.5rem;
+    }
+    .feature-read {
+      font-family: 'DM Mono', monospace; font-size: 0.62rem;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: #c0392b; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      transition: gap 0.2s;
+    }
+    .feature-read:hover { gap: 0.85rem; }
+
+    /* ─── STANDALONE ARTICLES ─── */
+    #articles { border-bottom: 1px solid #1e1e1e; }
+    .articles-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      border: 1px solid #1e1e1e;
+    }
+    .article-card {
+      padding: 2.5rem; border-right: 1px solid #1e1e1e;
+      display: flex; flex-direction: column; gap: 1rem;
+      cursor: pointer; transition: background 0.2s;
+    }
+    .article-card:last-child { border-right: none; }
+    .article-card:hover { background: #0e0e0e; }
+    .card-cat {
+      font-family: 'DM Mono', monospace; font-size: 0.55rem;
+      letter-spacing: 0.16em; text-transform: uppercase; color: #aaa;
+    }
+    .card-title {
+      font-family: 'Playfair Display', serif; font-weight: 700;
+      font-size: 1.15rem; line-height: 1.3; letter-spacing: -0.01em;
+      color: #f0ede8;
+    }
+    .card-excerpt {
+      font-family: 'Lora', serif; font-size: 0.88rem;
+      color: #aaa; line-height: 1.75; flex: 1;
+    }
+    .card-meta {
+      font-family: 'DM Mono', monospace; font-size: 0.55rem;
+      letter-spacing: 0.1em; text-transform: uppercase; color: #777;
+      padding-top: 1rem; border-top: 1px solid #1e1e1e;
+      display: flex; justify-content: space-between;
+    }
+    .card-meta a { color: #d4a843; text-decoration: none; }
+    .card-coming {
+      opacity: 0.35; cursor: default;
+    }
+    .card-coming:hover { background: transparent; }
+
+    /* ─── BATTERY SERIES ─── */
+    #series { background: #0e0e0e; border-bottom: 1px solid #1e1e1e; }
+    .series-intro {
+      max-width: 620px; margin-bottom: 3.5rem;
+    }
+    .series-intro p {
+      font-family: 'Lora', serif; font-size: 1rem; color: #aaa; line-height: 1.8;
+    }
+    .series-intro p strong { color: #f0ede8; }
+    .series-rail {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      border: 1px solid #2a2a2a;
+    }
+    .series-part {
+      padding: 2.5rem 2rem; border-right: 1px solid #2a2a2a;
+      border-bottom: 1px solid #2a2a2a;
+      display: flex; flex-direction: column; gap: 1rem;
+      cursor: pointer; transition: background 0.2s; position: relative;
+    }
+    .series-part:nth-child(3n) { border-right: none; }
+    .series-part:nth-child(4), .series-part:nth-child(5), .series-part:nth-child(6) { border-bottom: none; }
+    .part-num {
+      font-family: 'DM Mono', monospace; font-size: 0.55rem;
+      letter-spacing: 0.18em; text-transform: uppercase; color: #c0392b;
+    }
+    .part-title {
+      font-family: 'Playfair Display', serif; font-weight: 700;
+      font-size: 1.05rem; line-height: 1.3; color: #f0ede8;
+    }
+    .part-desc {
+      font-family: 'DM Mono', monospace; font-size: 0.6rem;
+      letter-spacing: 0.04em; color: #aaa; line-height: 1.65; flex: 1;
+    }
+    .part-link {
+      font-family: 'DM Mono', monospace; font-size: 0.58rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: #d4a843; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      transition: gap 0.2s;
+    }
+    .part-link:hover { gap: 0.7rem; }
+    .series-stat-bar {
+      margin-top: 3rem; padding-top: 2rem;
+      border-top: 1px solid #1e1e1e;
+      display: flex; gap: 4rem; flex-wrap: wrap;
+    }
+    .stat { display: flex; flex-direction: column; gap: 0.25rem; }
+    .stat-val {
+      font-family: 'Playfair Display', serif; font-weight: 900;
+      font-size: 2.2rem; color: #f0ede8; line-height: 1; letter-spacing: -0.03em;
+    }
+    .stat-val em { color: #c0392b; font-style: normal; }
+    .stat-label {
+      font-family: 'DM Mono', monospace; font-size: 0.55rem;
+      letter-spacing: 0.12em; text-transform: uppercase; color: #aaa;
+    }
+
+    /* ─── SUBSCRIBE ─── */
+    #subscribe { border-bottom: 1px solid #1e1e1e; }
+    .subscribe-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 0; border: 1px solid #1e1e1e;
+    }
+    .subscribe-left {
+      padding: 4rem; border-right: 1px solid #1e1e1e;
+    }
+    .subscribe-heading {
+      font-family: 'Playfair Display', serif; font-weight: 900;
+      font-size: clamp(2rem, 3.5vw, 3rem); line-height: 1.1;
+      letter-spacing: -0.03em; color: #f0ede8; margin-bottom: 1.5rem;
+    }
+    .subscribe-heading em { color: #c0392b; font-style: italic; }
+    .subscribe-body {
+      font-family: 'Lora', serif; font-size: 0.95rem;
+      color: #aaa; line-height: 1.8; margin-bottom: 2.5rem;
+    }
+    .subscribe-form {
+      display: flex; gap: 0; border: 1px solid #2a2a2a; max-width: 440px;
+    }
+    .subscribe-form input {
+      flex: 1; background: transparent; border: none; outline: none;
+      padding: 0.85rem 1.25rem;
+      font-family: 'DM Mono', monospace; font-size: 0.7rem;
+      color: #f0ede8; letter-spacing: 0.04em;
+    }
+    .subscribe-form input::placeholder { color: #777; }
+    .subscribe-form button {
+      background: #c0392b; border: none; cursor: pointer;
+      padding: 0.85rem 1.5rem;
+      font-family: 'DM Mono', monospace; font-size: 0.6rem;
+      letter-spacing: 0.12em; text-transform: uppercase; color: #fff;
+      transition: background 0.2s; white-space: nowrap;
+    }
+    .subscribe-form button:hover { background: #a93226; }
+    .form-success {
+      display: none; font-family: 'DM Mono', monospace;
+      font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase;
+      color: #2a7a2a; margin-top: 0.75rem;
+    }
+    .subscribe-right {
+      padding: 4rem; background: #0e0e0e;
+      display: flex; flex-direction: column; justify-content: center; gap: 2rem;
+    }
+    .subscribe-proof-label {
+      font-family: 'DM Mono', monospace; font-size: 0.55rem;
+      letter-spacing: 0.16em; text-transform: uppercase; color: #777;
+      margin-bottom: 0.5rem;
+    }
+    .proof-stats {
+      display: flex; gap: 3rem; flex-wrap: wrap;
+    }
+    .proof-stat { display: flex; flex-direction: column; gap: 0.2rem; }
+    .proof-val {
+      font-family: 'Playfair Display', serif; font-weight: 900;
+      font-size: 2rem; color: #f0ede8; letter-spacing: -0.03em;
+    }
+    .proof-label {
+      font-family: 'DM Mono', monospace; font-size: 0.55rem;
+      letter-spacing: 0.1em; text-transform: uppercase; color: #aaa;
+    }
+    .subscribe-note {
+      font-family: 'DM Mono', monospace; font-size: 0.58rem;
+      color: #777; letter-spacing: 0.04em; line-height: 1.7;
+      padding-top: 2rem; border-top: 1px solid #1e1e1e;
+    }
+
+    /* ─── ABOUT ─── */
+    #about { border-bottom: 1px solid #1e1e1e; }
+    .about-grid {
+      display: grid; grid-template-columns: 340px 1fr;
+      gap: 0; border: 1px solid #1e1e1e;
+    }
+    .about-left {
+      padding: 3.5rem; border-right: 1px solid #1e1e1e;
+      background: #0e0e0e;
+      display: flex; flex-direction: column; gap: 2rem;
+    }
+    .about-initial {
+      width: 64px; height: 64px; background: #c0392b;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 900; color: #fff;
+    }
+    .about-name {
+      font-family: 'Playfair Display', serif; font-weight: 900;
+      font-size: 1.4rem; color: #f0ede8; letter-spacing: -0.02em;
+    }
+    .about-role {
+      font-family: 'DM Mono', monospace; font-size: 0.58rem;
+      letter-spacing: 0.1em; text-transform: uppercase; color: #c0392b;
+    }
+    .about-credentials { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 0.5rem; }
+    .cred {
+      display: flex; gap: 1rem; align-items: baseline;
+      padding-bottom: 0.75rem; border-bottom: 1px solid #1e1e1e;
+    }
+    .cred:last-child { border-bottom: none; }
+    .cred-val {
+      font-family: 'Playfair Display', serif; font-weight: 900;
+      font-size: 1.1rem; color: #f0ede8; min-width: 40px;
+    }
+    .cred-label {
+      font-family: 'DM Mono', monospace; font-size: 0.58rem;
+      letter-spacing: 0.06em; color: #aaa; line-height: 1.5;
+    }
+    .about-right { padding: 3.5rem; display: flex; flex-direction: column; justify-content: center; gap: 1.5rem; }
+    .about-right p {
+      font-family: 'Lora', serif; font-size: 1rem; color: #aaa; line-height: 1.85;
+    }
+    .about-right p strong { color: #f0ede8; }
+
+    /* ─── CONTACT ─── */
+    #contact { border-bottom: 1px solid #1e1e1e; }
+    .contact-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 0; border: 1px solid #1e1e1e;
+    }
+    .contact-left { padding: 4rem; border-right: 1px solid #1e1e1e; }
+    .contact-heading {
+      font-family: 'Playfair Display', serif; font-weight: 900;
+      font-size: clamp(2rem, 3.5vw, 3rem); line-height: 1.1;
+      letter-spacing: -0.03em; color: #f0ede8; margin-bottom: 1.5rem;
+    }
+    .contact-heading em { font-style: italic; color: #d4a843; }
+    .contact-body {
+      font-family: 'Lora', serif; font-size: 0.95rem; color: #aaa; line-height: 1.8;
+    }
+    .contact-right { padding: 4rem; }
+    .contact-items { display: flex; flex-direction: column; }
+    .contact-item {
+      display: grid; grid-template-columns: 100px 1fr;
+      gap: 1rem; align-items: baseline;
+      padding: 1.25rem 0; border-bottom: 1px solid #1e1e1e;
+    }
+    .contact-item:last-child { border-bottom: none; }
+    .contact-label {
+      font-family: 'DM Mono', monospace; font-size: 0.55rem;
+      letter-spacing: 0.14em; text-transform: uppercase; color: #777;
+    }
+    .contact-value {
+      font-family: 'Lora', serif; color: #f0ede8; font-size: 0.95rem;
+    }
+    .contact-value a {
+      color: #f0ede8; text-decoration: none;
+      border-bottom: 1px solid #2a2a2a; transition: color 0.2s, border-color 0.2s;
+    }
+    .contact-value a:hover { color: #d4a843; border-color: #d4a843; }
+
+    /* ─── FOOTER ─── */
+    footer { background: #0a0a0a; border-top: 1px solid #1e1e1e; padding: 2.5rem; }
+    .footer-inner {
+      max-width: 1400px; margin: 0 auto;
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;
+    }
+    .footer-logo {
+      font-family: 'Playfair Display', serif; font-weight: 900;
+      font-size: 1rem; color: #f0ede8; text-decoration: none;
+    }
+    .footer-logo span { color: #c0392b; }
+    .footer-links { display: flex; gap: 2rem; align-items: center; }
+    .footer-links a {
+      font-family: 'DM Mono', monospace; font-size: 0.55rem;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: #777; text-decoration: none; transition: color 0.2s;
+    }
+    .footer-links a:hover { color: #f0ede8; }
+    .footer-copy {
+      font-family: 'DM Mono', monospace; font-size: 0.52rem;
+      letter-spacing: 0.1em; text-transform: uppercase; color: #666;
+    }
+
+    /* ─── SENTINEL TOGGLE ─── */
+    .sentinel-min-bar {
+      cursor: pointer;
+      border-bottom: 1px solid #2a2a2a;
+      background: #141414;
+      transition: background 0.2s;
+    }
+    .sentinel-min-bar:hover { background: #1a1a1a; }
+    .sentinel-min-inner {
+      max-width: 1400px; margin: 0 auto;
+      padding: 1.1rem 2.5rem;
+      display: flex; align-items: center; gap: 2rem;
+    }
+    .sentinel-min-headline {
+      font-family: 'Playfair Display', serif; font-weight: 900;
+      font-size: clamp(1.6rem, 3.5vw, 3rem);
+      line-height: 1; letter-spacing: -0.03em; color: #f0ede8;
+      flex: 1;
+    }
+    .sentinel-min-headline em { color: #c0392b; font-style: italic; }
+    .sentinel-toggle-btn {
+      background: none; border: 1px solid #555; cursor: pointer;
+      font-family: 'DM Mono', monospace; font-size: 0.52rem;
+      letter-spacing: 0.14em; text-transform: uppercase; color: #ccc;
+      padding: 0.35rem 0.75rem; transition: color 0.2s, border-color 0.2s;
+      white-space: nowrap;
+    }
+    .sentinel-toggle-btn:hover { color: #fff; border-color: #aaa; }
+    .sentinel-header-row {
+      display: flex; flex-direction: column; gap: 0.4rem;
+      margin-bottom: 0.3rem;
+    }
+    .sentinel-headline-row {
+      display: flex; align-items: center; gap: 1.5rem;
+    }
+
+    /* ─── MARKET SENTINEL SPLASH (compact) ─── */
+    .sentinel-splash {
+      background: #0d0d0d;
+      border-bottom: 1px solid #1e1e1e;
+      position: relative;
+      overflow: hidden;
+      padding-top: 64px;
+    }
+    .sentinel-splash::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #c0392b, #d4a843, #c0392b, transparent);
+    }
+    .sentinel-inner {
+      max-width: 1400px; margin: 0 auto; padding: 0.9rem 2.5rem 0;
+      position: relative; z-index: 1;
+    }
+    .sentinel-eyebrow {
+      font-family: 'DM Mono', monospace; font-size: 1rem;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: #c0392b;
+      display: flex; align-items: center; gap: 0.5rem;
+      white-space: nowrap;
+    }
+    .sentinel-eyebrow::before { content: ''; display: block; width: 48px; height: 2px; background: #c0392b; }
+    .sentinel-headline {
+      font-family: 'Playfair Display', serif; font-weight: 900;
+      font-size: clamp(1.4rem, 2.5vw, 2.2rem);
+      line-height: 1.0; letter-spacing: -0.02em; color: #f0ede8;
+      flex: 1;
+    }
+    .sentinel-headline em { color: #c0392b; font-style: italic; }
+    .sentinel-deck {
+      font-family: 'DM Mono', monospace; font-size: 0.65rem;
+      color: #bbb; line-height: 1.5; max-width: 860px;
+      letter-spacing: 0.03em; margin-bottom: 0.75rem;
+    }
+    .sentinel-parts-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr) auto;
+      border: 1px solid #2a1414;
+    }
+    .sentinel-parts-row .sentinel-part-link {
+      display: flex; flex-direction: column; gap: 0.12rem;
+      padding: 0.6rem 0.85rem;
+      border-right: 1px solid #2a1414;
+      text-decoration: none; transition: background 0.15s;
+    }
+    .sentinel-parts-row .sentinel-part-link:hover { background: #1a0a0a; }
+    .sentinel-parts-row .sentinel-access-link {
+      display: flex; flex-direction: column; gap: 0.12rem;
+      padding: 0.6rem 0.85rem;
+      text-decoration: none; transition: background 0.15s;
+      background: #0d0800; min-width: 150px;
+    }
+    .sentinel-parts-row .sentinel-access-link:hover { background: #1a0a0a; }
+    .sentinel-part-num {
+      font-family: 'DM Mono', monospace; font-size: 0.58rem;
+      letter-spacing: 0.18em; text-transform: uppercase; color: #c0392b;
+    }
+    .sentinel-part-title {
+      font-family: 'Playfair Display', serif; font-size: 1.05rem;
+      font-weight: 700; color: #f0ede8; line-height: 1.2;
+    }
+    .sentinel-part-sub {
+      font-family: 'DM Mono', monospace; font-size: 0.58rem;
+      color: #aaa; letter-spacing: 0.03em;
+    }
+    .sentinel-access-label {
+      font-family: 'DM Mono', monospace; font-size: 0.58rem;
+      letter-spacing: 0.18em; text-transform: uppercase; color: #d4a843;
+    }
+    /* Ghost stats bar */
+    .sentinel-ghost-stats {
+      display: flex; gap: 0;
+      border-top: 1px solid #181818;
+      margin-top: 0;
+      opacity: 1;
+    }
+    .sentinel-ghost-stat {
+      flex: 1; padding: 0.4rem 0.85rem;
+      border-right: 1px solid #181818;
+      display: flex; align-items: baseline; gap: 0.5rem;
+    }
+    .sentinel-ghost-stat:last-child { border-right: none; }
+    .sentinel-ghost-val {
+      font-family: 'Playfair Display', serif; font-weight: 900;
+      font-size: 1.1rem; color: #f0ede8; letter-spacing: -0.02em;
+      white-space: nowrap;
+    }
+    .sentinel-ghost-lbl {
+      font-family: 'DM Mono', monospace; font-size: 0.46rem;
+      letter-spacing: 0.08em; text-transform: uppercase; color: #bbb;
+    }
+    @keyframes sentinel-pulse {
+      0%, 100% { border-color: #c0392b; box-shadow: 0 0 0 0 rgba(192,57,43,0); }
+      50% { border-color: #e04535; box-shadow: 0 0 6px 1px rgba(192,57,43,0.3); }
+    }
+    @media (max-width: 900px) {
+      .sentinel-parts-row { grid-template-columns: 1fr 1fr; }
+      .sentinel-parts-row .sentinel-part-link { border-bottom: 1px solid #2a1414; }
+      .sentinel-parts-row .sentinel-access-link { grid-column: 1 / -1; }
+      .sentinel-ghost-stats { flex-wrap: wrap; }
+      .sentinel-ghost-stat { min-width: 50%; }
+    }
+    @media (max-width: 600px) {
+      .sentinel-header-row { flex-direction: column; gap: 0.4rem; }
+      .sentinel-parts-row { grid-template-columns: 1fr; }
+      .sentinel-parts-row .sentinel-part-link { border-right: none; }
+      .sentinel-ghost-stats { display: none; }
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 1024px) {
+      .series-rail { grid-template-columns: repeat(2, 1fr); }
+      .series-part:nth-child(3n) { border-right: 1px solid #2a2a2a; }
+      .series-part:nth-child(2n) { border-right: none; }
+      .series-part:nth-child(4), .series-part:nth-child(5), .series-part:nth-child(6) { border-bottom: 1px solid #2a2a2a; }
+      .series-part:nth-child(5), .series-part:nth-child(6) { border-bottom: none; }
+      .cta-trio { grid-template-columns: 1fr; }
+      .cta-block { border-right: none; border-bottom: 1px solid #2a2a2a; }
+      .cta-block:last-child { border-bottom: none; }
+    }
+    @media (max-width: 768px) {
+      .header-inner { padding: 0 1.5rem; }
+      nav { gap: 1.25rem; }
+      nav a.hide-mobile { display: none; }
+      .hero-inner { padding: 4rem 1.5rem 3rem; }
+      .section-wrap { padding: 3.5rem 1.5rem; }
+      .feature-card { grid-template-columns: 1fr; }
+      .feature-card-meta { border-right: none; border-bottom: 1px solid #1e1e1e; padding: 2rem; }
+      .feature-card-body { padding: 2rem; }
+      .articles-grid { grid-template-columns: 1fr; }
+      .article-card { border-right: none; border-bottom: 1px solid #1e1e1e; }
+      .series-rail { grid-template-columns: 1fr; }
+      .series-part { border-right: none !important; border-bottom: 1px solid #2a2a2a; }
+      .subscribe-grid, .about-grid, .contact-grid { grid-template-columns: 1fr; }
+      .subscribe-left, .subscribe-right, .about-left, .contact-left { border-right: none; border-bottom: 1px solid #1e1e1e; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-inner">
+      <a href="index.html" class="logo">Policy<span>Torque</span></a>
+      <nav>
+        <a href="#articles" class="hide-mobile">Analysis</a>
+        <a href="#articles" class="hide-mobile">Series</a>
+        <a href="policy-engine.html" class="hide-mobile" style="color:#c0392b;">Engine ↗</a>
+        <a href="market_sentinel_article.html" class="hide-mobile" style="color:#c0392b;border:1px solid #c0392b;padding:0.3rem 0.7rem;animation:sentinel-pulse 2s ease-in-out infinite;">⚑ Sentinel</a>
+        <a href="market_sentinel_access.html" class="hide-mobile" style="color:#d4a843;">Pricing</a>
+        <a href="#about" class="hide-mobile">About</a>
+        <a href="#contact" class="hide-mobile">Contact</a>
+        <a href="https://policytorque.beehiiv.com/subscribe" target="_blank" class="nav-subscribe">Subscribe</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- INTELLIGENCE LAYER SPLASH -->
+  <section class="sentinel-splash" id="intel-section">
+
+    <!-- MINIMIZED STATE -->
+    <div class="sentinel-min-bar" id="intel-min" onclick="intelExpand()" style="display:block;">
+      <div class="sentinel-min-inner">
+        <div class="sentinel-eyebrow" style="font-size:0.48rem;">⬡ The Intelligence Layer · Software Sovereignty Series</div>
+        <h2 class="sentinel-min-headline">Securing the supply chain<br><em>is not enough.</em></h2>
+        <button class="sentinel-toggle-btn" onclick="event.stopPropagation();intelExpand()" aria-label="Expand">&#9660; expand</button>
+      </div>
+    </div>
+
+    <!-- EXPANDED STATE -->
+    <div id="intel-expanded" style="display:none;">
+      <div class="sentinel-inner">
+        <div class="sentinel-header-row">
+          <div class="sentinel-eyebrow">⬡ The Intelligence Layer · Software Sovereignty Series</div>
+          <div class="sentinel-headline-row">
+            <h2 class="sentinel-headline">Securing the supply chain is not enough. <em>Someone owns the software on top of it.</em></h2>
+            <button class="sentinel-toggle-btn" onclick="intelCollapse()" aria-label="Minimize">&#9650; minimize</button>
+          </div>
+        </div>
+        <p class="sentinel-deck">The battery series ended at the materials layer. This series begins at the intelligence layer: the BMS, the data flywheel it feeds, the certification economics that locked American entrants out, and the offensive chemistry strategy that lets them climb over the wall.</p>
+        <div class="sentinel-parts-row" style="grid-template-columns: repeat(3, 1fr);">
+          <a href="intelligence-layer-part1.html" class="sentinel-part-link">
+            <span class="sentinel-part-num">Part 1</span>
+            <span class="sentinel-part-title">The Operating System of the Pack</span>
+            <span class="sentinel-part-sub">What a BMS actually does · why it matters · who owns it</span>
+          </a>
+          <a href="intelligence-layer-part2.html" class="sentinel-part-link">
+            <span class="sentinel-part-num">Part 2</span>
+            <span class="sentinel-part-title">The Certification Moat</span>
+            <span class="sentinel-part-sub">ASIL-D economics · $40M barrier · the lock-in mechanism</span>
+          </a>
+          <a href="intelligence-layer-part3.html" class="sentinel-part-link" style="border-right:none;">
+            <span class="sentinel-part-num">Part 3</span>
+            <span class="sentinel-part-title">The Data Sovereign</span>
+            <span class="sentinel-part-sub">The data flywheel · who controls the telemetry · why it compounds</span>
+          </a>
+          <a href="intelligence-layer-part4.html" class="sentinel-part-link" style="border-top:1px solid #2a1414;">
+            <span class="sentinel-part-num">Part 4</span>
+            <span class="sentinel-part-title">The OWS Model</span>
+            <span class="sentinel-part-sub">BARDA for BMS · milestone-based · shared federal test infrastructure</span>
+          </a>
+          <a href="intelligence-layer-part5-ladder.html" class="sentinel-part-link" style="border-top:1px solid #2a1414;">
+            <span class="sentinel-part-num">Part 5</span>
+            <span class="sentinel-part-title">The Ladder</span>
+            <span class="sentinel-part-sub">The leapfrog argument · chemistry as the entry point</span>
+          </a>
+          <a href="intelligence-layer-part6.html" class="sentinel-part-link" style="border-right:none;border-top:1px solid #2a1414;background:#0d0800;">
+            <span class="sentinel-part-num" style="color:#d4a843;">Part 6 · Final</span>
+            <span class="sentinel-part-title">The Quiet Weapon</span>
+            <span class="sentinel-part-sub">The Stuxnet parallel · the frame that changes everything</span>
+          </a>
+        </div>
+        <div class="sentinel-ghost-stats">
+          <div class="sentinel-ghost-stat">
+            <span class="sentinel-ghost-val" style="color:#ffffff;">$40M</span>
+            <span class="sentinel-ghost-lbl" style="color:#ffffff;">ASIL-D certification barrier per entrant</span>
+          </div>
+          <div class="sentinel-ghost-stat">
+            <span class="sentinel-ghost-val" style="color:#ffffff;">6</span>
+            <span class="sentinel-ghost-lbl" style="color:#ffffff;">Parts · complete series</span>
+          </div>
+          <div class="sentinel-ghost-stat">
+            <span class="sentinel-ghost-val" style="color:#ffffff;">BMS</span>
+            <span class="sentinel-ghost-lbl" style="color:#ffffff;">The intelligence layer foreign actors already own</span>
+          </div>
+          <div class="sentinel-ghost-stat">
+            <span class="sentinel-ghost-val" style="color:#ffffff;">OWS</span>
+            <span class="sentinel-ghost-lbl" style="color:#ffffff;">The policy model that breaks the moat</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+
+  <!-- CIVIL RIGHTS SERIES SPLASH -->
+  <section class="sentinel-splash" id="civil-rights-section" style="border-top:1px solid #1e1e1e;">
+
+    <!-- MINIMIZED STATE -->
+    <div class="sentinel-min-bar" id="civil-rights-min" onclick="civilRightsExpand()" style="display:block;">
+      <div class="sentinel-min-inner">
+        <div class="sentinel-eyebrow" style="font-size:0.48rem;">&#9650; Civil Rights Series · PUBLIC Transit · Active Investigation</div>
+        <h2 class="sentinel-min-headline"><span style="font-size:0.85em;">When doing something is<br><span style="color:#c0392b;">worse</span> than<br>doing <span style="color:#c0392b;">nothing.</span></span></h2>
+        <button class="sentinel-toggle-btn" onclick="event.stopPropagation();civilRightsExpand()" aria-label="Expand">&#9660; expand</button>
+      </div>
+    </div>
+
+    <!-- EXPANDED STATE -->
+    <div id="civil-rights-expanded" style="display:none;">
+      <div class="sentinel-inner">
+        <div class="sentinel-header-row">
+          <div class="sentinel-eyebrow">&#9650; Civil Rights Series · PUBLIC Transit · Active Investigation</div>
+          <div class="sentinel-headline-row">
+            <h2 class="sentinel-headline"><span style="font-size:0.85em;">When doing something is<br><span style="color:#c0392b;">worse</span> than<br>doing <span style="color:#c0392b;">nothing.</span></span> The data proves it.</h2>
+            <button class="sentinel-toggle-btn" onclick="civilRightsCollapse()" aria-label="Minimize">&#9650; minimize</button>
+          </div>
+        </div>
+        <p class="sentinel-deck">$251 million in private security contracts. $26,148.57 in actual cash collected. 63,862 people with growing debt following them. An engineer from Troy, Michigan filed a FOIA request to impress a newsroom. What he found instead was a default judgment machine, a $26 million board authorization gap ratified retroactively, and a contractor whose co-founder is the brother of a convicted corrupt alderman. $430 million in combined enforcement spending. A federal Special Directive finding it failed anyway. 13 active FOIAs. 2 PAC appeals. Active referrals to the Illinois AG, IDOT, and OEIG.</p>
+        <div class="sentinel-parts-row" style="grid-template-columns: repeat(4, 1fr);">
+          <a href="cta-transit-enforcement.html" class="sentinel-part-link">
+            <span class="sentinel-part-num" style="color:#c0392b;">Part I</span>
+            <span class="sentinel-part-title">$251 Million Out. $26,148.57 Back.</span>
+            <span class="sentinel-part-sub">The contracts · the board authorization gap · the contractor · the DOAH data</span>
+          </a>
+          <a href="cta-accidental-conspiracy.html" class="sentinel-part-link">
+            <span class="sentinel-part-num" style="color:#c0392b;">Part II</span>
+            <span class="sentinel-part-title">The Accidental Conspiracy</span>
+            <span class="sentinel-part-sub">What Finance produced · $26,148.57 collected · 63,862 in collections · 0.01% ROI vs. private security alone</span>
+          </a>
+          <a href="cta-half-billion-failure.html" class="sentinel-part-link">
+            <span class="sentinel-part-num" style="color:#c0392b;">Part III</span>
+            <span class="sentinel-part-title">The Almost Half Billion Dollar Failure</span>
+            <span class="sentinel-part-sub">$430M combined enforcement · FTA Special Directive · federal corroboration</span>
+          </a>
+          <a href="cta-enforcement-audit.html" class="sentinel-part-link" style="border-right:none;">
+            <span class="sentinel-part-num" style="color:#c0392b;">Live Dashboard</span>
+            <span class="sentinel-part-title">FOIA Tracker · Investigation Status</span>
+            <span class="sentinel-part-sub">13 FOIAs · 2 PAC appeals · updated May 6, 2026</span>
+          </a>
+        </div>
+        <div class="sentinel-ghost-stats">
+          <div class="sentinel-ghost-stat">
+            <span class="sentinel-ghost-val" style="color:#c0392b;">$430M</span>
+            <span class="sentinel-ghost-lbl" style="color:#ffffff;">Combined enforcement · private security + CPD · 2018 to 2026</span>
+          </div>
+          <div class="sentinel-ghost-stat">
+            <span class="sentinel-ghost-val" style="color:#c0392b;">$26,148.57</span>
+            <span class="sentinel-ghost-lbl" style="color:#ffffff;">Cash collected as of May 4, 2026 · Dept. of Finance production</span>
+          </div>
+          <div class="sentinel-ghost-stat">
+            <span class="sentinel-ghost-val" style="color:#c0392b;">63,862</span>
+            <span class="sentinel-ghost-lbl" style="color:#ffffff;">People referred to a collection firm · debt still growing</span>
+          </div>
+          <div class="sentinel-ghost-stat">
+            <span class="sentinel-ghost-val" style="color:#c0392b;">0.006%</span>
+            <span class="sentinel-ghost-lbl" style="color:#ffffff;">True ROI · cash collected vs. full enforcement cost · private security + CPD</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-grid-bg"></div>
+    <div class="hero-inner">
+      <div class="hero-eyebrow">Engineering · Policy · Automotive</div>
+      <h1 class="hero-title">Where the<br>factory floor<br>meets the <em>floor vote.</em></h1>
+      <p class="hero-deck">
+        <strong>PolicyTorque</strong> is automotive engineering analysis for people who need to understand what's actually happening, not what the press release says. Written by an engineer who has spent eight years building the products at the center of the policy debate.
+      </p>
+      <div class="cta-trio">
+        <div class="cta-block" onclick="document.getElementById('articles').scrollIntoView({behavior:'smooth'})" style="cursor:pointer;">
+          <div class="cta-number">01 — Read</div>
+          <div class="cta-label">All Series &amp; Analysis</div>
+          <div class="cta-sub">Five series. Forty-four pieces. Battery supply chain, software sovereignty, national security, manufacturing economics, and constitutional law. Start anywhere, read in order, or skip to the part you need.</div>
+          <a href="#articles" class="cta-action red" onclick="event.stopPropagation()">Browse All →</a>
+        </div>
+        <div class="cta-block" onclick="location.href='https://policytorque.beehiiv.com/subscribe'" style="cursor:pointer;">
+          <div class="cta-number">02 — Subscribe</div>
+          <div class="cta-label">Analysis in Your Inbox</div>
+          <div class="cta-sub">Engineering-grounded policy analysis for OEM professionals, policy staff, and anyone who needs the real numbers. Free, always.</div>
+          <a href="https://policytorque.beehiiv.com/subscribe" target="_blank" class="cta-action gold" onclick="event.stopPropagation()">Subscribe Free →</a>
+        </div>
+        <div class="cta-block" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})" style="cursor:pointer;">
+          <div class="cta-number">03 — Engage</div>
+          <div class="cta-label">Consulting &amp; Briefings</div>
+          <div class="cta-sub">Available for policy briefings, media appearances, consulting engagements, and speaking at the intersection of EV policy and manufacturing reality.</div>
+          <a href="#contact" class="cta-action white" onclick="event.stopPropagation()">Get in Touch →</a>
+        </div>
+        <div class="cta-block" onclick="location.href='market_sentinel_access.html'" style="cursor:pointer;border-left:2px solid #c0392b;">
+          <div class="cta-number" style="color:#c0392b;">⚑ Market Sentinel</div>
+          <div class="cta-label">Alert Subscriber · $9/Month</div>
+          <div class="cta-sub">Live options scanning. Automated alerts when the signal spikes. The same surveillance that caught the April 7 sequence, running daily at 4:30 PM ET. Cancel anytime.</div>
+          <a href="market_sentinel_access.html" class="cta-action red" onclick="event.stopPropagation()">Subscribe $9/Month →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERIES INDEX -->
+  <section id="articles">
+    <div class="section-wrap">
+      <div class="section-header">
+        <div class="section-title">Series</div>
+        <div class="section-tag">All Analysis</div>
+      </div>
+
+      <style>
+        .series-box {
+          border: 1px solid #1e1e1e;
+          margin-bottom: 1px;
+          background: #0d0d0d;
+          transition: background 0.2s;
+        }
+        .series-box:hover { background: #111; }
+        .series-box-top {
+          display: grid;
+          grid-template-columns: 1fr auto;
+          gap: 2rem;
+          padding: 2.5rem 2.5rem 1.5rem;
+          align-items: start;
+        }
+        @media (max-width: 640px) {
+          .series-box-top { grid-template-columns: 1fr; padding: 1.5rem 1.5rem 1rem; }
+          .series-box-parts { padding: 0 1.5rem 1.5rem; gap: 0; }
+          .series-part-link { padding: 0.6rem 0; }
+        }
+        .series-box-label {
+          font-family: 'DM Mono', monospace; font-size: 0.58rem;
+          letter-spacing: 0.18em; text-transform: uppercase;
+          color: #aaa; margin-bottom: 0.6rem;
+        }
+        .series-box-title {
+          font-family: 'Playfair Display', serif; font-weight: 700;
+          font-size: 1.25rem; color: #f0ede8; line-height: 1.2;
+          margin-bottom: 0.6rem;
+        }
+        .series-box-desc {
+          font-family: 'Lora', serif; font-size: 0.9rem;
+          color: #ccc; line-height: 1.7; max-width: 680px;
+        }
+        .series-box-start {
+          font-family: 'DM Mono', monospace; font-size: 0.62rem;
+          letter-spacing: 0.1em; text-transform: uppercase;
+          color: #c0392b; text-decoration: none; white-space: nowrap;
+          padding-top: 0.2rem;
+          display: inline-flex; align-items: center; gap: 0.4rem;
+          transition: gap 0.2s;
+        }
+        .series-box-start:hover { gap: 0.7rem; }
+        .series-box-start.gold { color: #d4a843; }
+        .series-box-parts {
+          display: flex; flex-wrap: wrap; gap: 0;
+          border-top: 1px solid #1e1e1e;
+        }
+        .series-part-link {
+          font-family: 'DM Mono', monospace; font-size: 0.6rem;
+          letter-spacing: 0.08em; text-transform: uppercase;
+          color: #bbb; text-decoration: none;
+          padding: 0.75rem 1.25rem;
+          border-right: 1px solid #1e1e1e;
+          transition: color 0.2s, background 0.2s;
+          white-space: nowrap;
+        }
+        .series-part-link:hover { color: #f0ede8; background: #141414; }
+        .series-part-link.gold:hover { color: #d4a843; }
+
+        .standalone-grid {
+          display: grid; grid-template-columns: repeat(3, 1fr);
+          border: 1px solid #1e1e1e; margin-top: 3rem;
+        }
+        .standalone-card {
+          padding: 2rem; border-right: 1px solid #1e1e1e;
+          display: flex; flex-direction: column; gap: 0.75rem;
+          cursor: pointer; transition: background 0.2s;
+        }
+        .standalone-card:last-child { border-right: none; }
+        .standalone-card:nth-child(3n) { border-right: none; }
+        .standalone-card:nth-child(n+4) { border-top: 1px solid #1e1e1e; }
+        .standalone-card:hover { background: #111; }
+        .standalone-cat {
+          font-family: 'DM Mono', monospace; font-size: 0.55rem;
+          letter-spacing: 0.14em; text-transform: uppercase; color: #aaa;
+        }
+        .standalone-title {
+          font-family: 'Playfair Display', serif; font-weight: 700;
+          font-size: 1rem; line-height: 1.3; color: #f0ede8;
+        }
+        .standalone-meta {
+          font-family: 'DM Mono', monospace; font-size: 0.55rem;
+          letter-spacing: 0.1em; text-transform: uppercase; color: #777;
+          margin-top: auto; padding-top: 0.75rem;
+          border-top: 1px solid #1e1e1e;
+          display: flex; justify-content: space-between;
+        }
+        .standalone-meta a { color: #d4a843; text-decoration: none; }
+        .series-section-label {
+          font-family: 'DM Mono', monospace; font-size: 0.58rem;
+          letter-spacing: 0.18em; text-transform: uppercase;
+          color: #777; margin: 3rem 0 1rem;
+        }
+      </style>
+
+      <!-- THE HOLLOW LAW -->
+      <div class="series-section-label" style="color:#c0392b;">&#9652; New Series — Constitutional Law</div>
+      <div style="height:2px;background:linear-gradient(90deg, transparent, #c0392b, #d4a843, #c0392b, transparent);margin:0;"></div>
+      <div class="series-box" style="border-color:#2a1414;background:#0f0a0a;">
+        <div class="series-box-top">
+          <div>
+            <div class="series-box-label" style="color:#c0392b;">The Hollow Law · Prologue + 12 Parts + Concluding Chapter · Complete</div>
+            <div class="series-box-title">The Constitution is not what it says. It is what they let it be.</div>
+            <p class="series-box-desc">The documented trail of hotel rooms, railroad lawyers, judicial doctrines, resort seminars for federal judges, corporate-funded law schools, and amicus brief operations that hollowed the constitutional protections of democratic participation across 150 years. Opens at the Wormley Hotel, February 26, 1877. Closes with the amicus brief that forces the Supreme Court to choose between its doctrine and its power. Fourteen primary sources in the Prologue alone. Every claim pullable.</p>
+          </div>
+          <a href="hollow-law-prologue.html" class="series-box-start" style="color:#c0392b;">Start at Prologue →</a>
+        </div>
+        <div class="series-box-parts">
+          <a href="hollow-law-prologue.html" class="series-part-link" style="color:#c0392b;">Prologue · Before the Law</a>
+          <a href="hollow-law-part-1.html" class="series-part-link" style="color:#c0392b;">Part 1 · The Relief Valve</a>
+          <a href="hollow-law-part-2.html" class="series-part-link" style="color:#c0392b;">Part 2 · The First Inversion</a>
+          <a href="hollow-law-part-3.html" class="series-part-link" style="color:#c0392b;">Part 3 · The Clayton Correction That Wasn't</a>
+          <a href="hollow-law-part-4.html" class="series-part-link" style="color:#c0392b;">Part 4 · The Memo</a>
+          <a href="hollow-law-part-5.html" class="series-part-link" style="color:#c0392b;">Part 5 · The Journal</a>
+          <a href="hollow-law-part-6.html" class="series-part-link" style="color:#c0392b;">Part 6 · The Judge Education Machine</a>
+          <a href="hollow-law-part-7.html" class="series-part-link" style="color:#c0392b;">Part 7 · A Game of Telephone</a>
+          <a href="hollow-law-part-8.html" class="series-part-link" style="color:#c0392b;">Part 8 · The Amicus Industrial Complex</a>
+          <a href="hollow-law-part-9.html" class="series-part-link" style="color:#c0392b;">Part 9 · The Pipeline</a>
+          <a href="hollow-law-part-10.html" class="series-part-link" style="color:#c0392b;">Part 10 · The Administrative Hollowing</a>
+          <a href="hollow-law-part-11.html" class="series-part-link" style="color:#c0392b;">Part 11 · The Dues and the Dead Letter</a>
+          <a href="hollow-law-part-12.html" class="series-part-link" style="color:#c0392b;">Part 12 · Amazon is Standard Oil</a>
+          <a href="hollow-law-amicus.html" class="series-part-link" style="color:#c0392b;font-style:italic;">Concluding Chapter · The Amicus Brief</a>
+        </div>
+      </div>
+
+      <!-- BATTERY SUPPLY CHAIN -->
+      <div class="series-section-label">Battery Supply Chain Series</div>
+      <div style="height:2px;background:linear-gradient(90deg, transparent, #c0392b, #d4a843, #c0392b, transparent);margin:0;"></div>
+      <div class="series-box">
+        <div class="series-box-top">
+          <div>
+            <div class="series-box-label">Battery Supply Chain · 10 Parts · Complete</div>
+            <div class="series-box-title">The battery America needs is already here. Someone has to decide to build it.</div>
+            <p class="series-box-desc">Ten-part engineering and policy analysis from anode to cathode to electrolyte. Parts 1–6 solve the anode problem and arrive at a domestic EV at $30,004. Parts 7–10 cross to the cathode, map the refining strategy, and find the non-flammable electrolyte in the seafood industry's dumpster.</p>
+          </div>
+          <a href="tariff-article.html" class="series-box-start">Start at Part 1 →</a>
+        </div>
+        <div class="series-box-parts">
+          <a href="tariff-article.html" class="series-part-link">Part 1 · The Cost Problem</a>
+          <a href="bom-article.html" class="series-part-link">Part 2 · The BOM</a>
+          <a href="graphite-article.html" class="series-part-link">Part 3 · The Anode Problem</a>
+          <a href="hamilton-article.html" class="series-part-link">Part 4 · The Anode Solution</a>
+          <a href="byd-bom-article.html" class="series-part-link">Part 5 · The Full BOM</a>
+          <a href="pfas-triple-stack.html" class="series-part-link">Part 6 · The Business Case</a>
+          <a href="cathode-article.html" class="series-part-link">Part 7 · The Cathode Problem</a>
+          <a href="salton-sea-article.html" class="series-part-link">Part 8 · The Cathode Sourcing</a>
+          <a href="refinery-article.html" class="series-part-link">Part 9 · The Cathode Refining</a>
+          <a href="electrolyte-article.html" class="series-part-link">Part 10 · The Electrolyte</a>
+        </div>
+      </div>
+
+      <!-- THE INTELLIGENCE LAYER -->
+      <div class="series-section-label">Software Sovereignty Series</div>
+      <div style="height:2px;background:linear-gradient(90deg, transparent, #c0392b, #d4a843, #c0392b, transparent);margin:0;"></div>
+      <div class="series-box" style="border-color:#2a2a2a;">
+        <div class="series-box-top">
+          <div>
+            <div class="series-box-label">The Intelligence Layer · 6 Parts · Complete</div>
+            <div class="series-box-title">Securing the physical supply chain is not enough if foreign actors own the software sitting on top of it.</div>
+            <p class="series-box-desc">The battery series ended at the materials layer. This series begins at the intelligence layer: the Battery Management System, the data flywheel it feeds, the certification economics that have locked American entrants out of the market, and the offensive chemistry strategy that lets American companies climb over the wall rather than build a replica of it. Six parts from engineering reality to policy proposal to the leapfrog argument to the Stuxnet parallel that changes the frame entirely.</p>
+          </div>
+          <a href="intelligence-layer-part1.html" class="series-box-start">Start at Part 1 →</a>
+        </div>
+        <div class="series-box-parts">
+          <a href="intelligence-layer-part1.html" class="series-part-link" style="color:#c0392b;">Part 1 · The Operating System of the Pack</a>
+          <a href="intelligence-layer-part2.html" class="series-part-link" style="color:#c0392b;">Part 2 · The Certification Moat</a>
+          <a href="intelligence-layer-part3.html" class="series-part-link" style="color:#c0392b;">Part 3 · The Data Sovereign</a>
+          <a href="intelligence-layer-part4.html" class="series-part-link" style="color:#c0392b;">Part 4 · The OWS Model</a>
+          <a href="intelligence-layer-part5-ladder.html" class="series-part-link" style="color:#c0392b;">Part 5 · The Ladder</a>
+          <a href="intelligence-layer-part6.html" class="series-part-link" style="color:#c0392b;">Part 6 · The Quiet Weapon</a>
+        </div>
+      </div>
+
+      <!-- QUIET ACQUISITION -->
+      <div class="series-section-label">National Security Series</div>
+      <div style="height:2px;background:linear-gradient(90deg, transparent, #c0392b, #d4a843, #c0392b, transparent);margin:0;"></div>
+      <div class="series-box">
+        <div class="series-box-top">
+          <div>
+            <div class="series-box-label">The Quiet Acquisition · 6 Parts + Coda · Complete</div>
+            <div class="series-box-title">The foreign acquisition vector American policy doesn't see yet.</div>
+            <p class="series-box-desc">FEOC blocks the front door. The back door: remediation contracts, produced water operations, Good Samaritan permits, is open. Six parts map the threat, document the precedent, identify three zones of exposure, propose two achievable legislative fixes, map the commercial race already underway, and close with the talent shortage that outlasts every legislative fix. The Coda provides the strategic frame underneath all of it: Sun Tzu, Wu Wei, and the doctrine of patient accumulation that makes each specific vulnerability more dangerous than it appears alone.</p>
+          </div>
+          <a href="wrong-wall-article.html" class="series-box-start gold">Start at Part 1 →</a>
+        </div>
+        <div class="series-box-parts">
+          <a href="wrong-wall-article.html" class="series-part-link gold">Part 1 · The Wrong Wall</a>
+          <a href="precedent-article.html" class="series-part-link gold">Part 2 · The Precedent</a>
+          <a href="open-door-article.html" class="series-part-link gold">Part 3 · The Open Door</a>
+          <a href="enforcement-gap-article.html" class="series-part-link gold">Part 4 · The Enforcement Gap</a>
+          <a href="counter-article.html" class="series-part-link gold">Part 5 · The Counter</a>
+          <a href="missing-school-article.html" class="series-part-link gold">Part 6 · The Missing School</a>
+          <a href="qa-coda.html" class="series-part-link" style="color:#d4a843;font-style:italic;">Coda · The River and the Stone</a>
+        </div>
+      </div>
+
+      <!-- AMERICAN FACTORY -->
+      <div class="series-section-label">Manufacturing Series</div>
+      <div style="height:2px;background:linear-gradient(90deg, transparent, #c0392b, #d4a843, #c0392b, transparent);margin:0;"></div>
+      <div class="series-box">
+        <div class="series-box-top">
+          <div>
+            <div class="series-box-label">The American Factory · 8 Parts · Complete</div>
+            <div class="series-box-title">The factory that comes back doesn't look like the one that left. The commercial model that sustains it doesn't exist yet either.</div>
+            <p class="series-box-desc">From the automation threshold through the insurance problem, the supplier death spiral, and the sixty-three-year proof of concept Ford killed to make room for a van that couldn't compete against it. Seven parts. One argument: build it right or don't build it.</p>
+          </div>
+          <a href="automation-threshold-article.html" class="series-box-start">Start at Part 1 →</a>
+        </div>
+        <div class="series-box-parts">
+          <a href="automation-threshold-article.html" class="series-part-link">Part 1 · The New Qualification</a>
+          <a href="robot-jobs-article.html" class="series-part-link">Part 2 · The Jobs Aren't Coming Back</a>
+          <a href="blueprint-article.html" class="series-part-link">Part 3 · The Blueprint</a>
+          <a href="american-factory-part4.html" class="series-part-link">Part 4 · The Commercial Model</a>
+          <a href="american-factory-part5.html" class="series-part-link">Part 5 · Some Lights Can't Go Out</a>
+          <a href="american-factory-part6.html" class="series-part-link">Part 6 · The Trap</a>
+          <a href="american-factory-part-vn127.html" class="series-part-link">Part (VN12)7 · The Proof</a>
+          <a href="american-factory-part8.html" class="series-part-link">Part 8 · The Same Rules as Everyone Else</a>
+        </div>
+      </div>
+
+      <!-- AMERICAN MATERIALS BOND -->
+      <div class="series-section-label">Policy Documents Series</div>
+      <div style="height:2px;background:linear-gradient(90deg, transparent, #c0392b, #d4a843, #c0392b, transparent);margin:0;"></div>
+      <div class="series-box">
+        <div class="series-box-top">
+          <div>
+            <div class="series-box-label">American Materials Bond · 3 Documents · Complete</div>
+            <div class="series-box-title">Three signatures. No legislation. The battery America needs.</div>
+            <p class="series-box-desc">The Hamilton article argued that domestic battery-grade graphite production could be mobilized through three executive actions already authorized by existing statute. These are those three documents, written as they would appear if executed today. A DOD offtake agreement. A DOE loan guarantee. A Treasury rulemaking. The government's cash outlay may be zero.</p>
+          </div>
+          <a href="dod-offtake-agreement.html" class="series-box-start">Start at Document 1 →</a>
+        </div>
+        <div class="series-box-parts">
+          <a href="dod-offtake-agreement.html" class="series-part-link">Document 1 · The Offtake Agreement</a>
+          <a href="doe-loan-guarantee.html" class="series-part-link">Document 2 · The Loan Guarantee</a>
+          <a href="treasury-amf-rulemaking.html" class="series-part-link">Document 3 · The Rulemaking</a>
+        </div>
+      </div>
+
+      <!-- CURRENT EVENTS ANALYSIS -->
+      <div class="series-section-label" style="color:#c0392b;">&#9652; Civil Rights Series — PUBLIC Transit</div>
+      <div style="height:2px;background:linear-gradient(90deg, transparent, #c0392b, #d4a843, #c0392b, transparent);margin-bottom:0;"></div>
+      <div style="height:2px;background:linear-gradient(90deg, transparent, #c0392b, #d4a843, #c0392b, transparent);margin:0;"></div>
+      <div class="series-box" style="border-color:#2a1414;background:#0f0a0a;border-top:none;">
+        <div class="series-box-top">
+          <div>
+            <div class="series-box-label" style="color:#c0392b;">Civil Rights Series · PUBLIC Transit · Active Investigation</div>
+            <div class="series-box-title">$251 million out. $26,148.57 back. 63,862 people with debt following them.</div>
+            <p class="series-box-desc">A request to impress a Chicago newsroom — an engineer from Troy, Michigan with data skills. What he found instead was a $251 million private security apparatus that collected $26,148.57 in actual fare evasion revenue, a $26 million board authorization overspend ratified retroactively, a contractor connected to a convicted corrupt alderman, and tens of thousands of residents carrying growing debt from a system that collected almost nothing. $430 million in combined enforcement spending. A federal Special Directive finding it failed anyway. 13 active FOIAs. 2 PAC appeals. Active referrals to the Illinois AG, IDOT, and OEIG. The investigation is ongoing.</p>
+          </div>
+          <a href="cta-half-billion-failure.html" class="series-box-start" style="color:#c0392b;">Read Latest →</a>
+        </div>
+        <div class="series-box-parts">
+          <a href="cta-half-billion-failure.html" class="series-part-link" style="color:#c0392b;">May 6, 2026 · Part III · The Almost Half Billion Dollar Failure</a>
+          <a href="cta-accidental-conspiracy.html" class="series-part-link" style="color:#c0392b;">May 4, 2026 · Part II · The Accidental Conspiracy</a>
+          <a href="cta-transit-enforcement.html" class="series-part-link" style="color:#c0392b;">Apr 24, 2026 · Part I · $251 Million Out. $26,148.57 Back.</a>
+          <a href="cta-enforcement-audit.html" class="series-part-link" style="color:#c0392b;">Live Dashboard · 13 FOIAs · 2 PAC Appeals · Updated May 4, 2026</a>
+        </div>
+      </div>
+
+      <div class="series-section-label" style="color:#c0392b;">&#9652; Breaking Analysis — Current Events</div>
+      <div style="height:2px;background:linear-gradient(90deg, transparent, #c0392b, #d4a843, #c0392b, transparent);margin:0;"></div>
+      <div class="series-box" style="border-color:#2a1414;background:#0f0a0a;">
+        <div class="series-box-top">
+          <div>
+            <div class="series-box-label" style="color:#c0392b;">Current Events · Engineering-Informed · As Events Warrant</div>
+            <div class="series-box-title">The analysis that doesn't wait for the news cycle to catch up.</div>
+            <p class="series-box-desc">When events move faster than long-form series allow, PolicyTorque publishes standalone analysis. Engineering-grounded, strategically precise, written while the situation is still live. No hot takes. No partisanship. The argument that holds up after the headlines move on.</p>
+          </div>
+          <a href="dod-1point5t-hegseth.html" class="series-box-start" style="color:#c0392b;">Read Latest →</a>
+        </div>
+        <div class="series-box-parts">
+          <a href="dod-1point5t-hegseth.html" class="series-part-link" style="color:#c0392b;">Apr 18, 2026 · So the DOD Wants $1.5 Trillion. Fine, but Here's What You Do With It.</a>
+          <a href="iran-won-trump-lost.html" class="series-part-link" style="color:#c0392b;">Apr 9, 2026 · Iran Won. Trump Lost.</a>
+        </div>
+      </div>
+
+
+      <!-- MARKET SENTINEL -->
+      <div class="series-section-label" style="color:#c0392b;">⚑ New Investigation — Market Surveillance</div>
+      <div style="height:2px;background:linear-gradient(90deg, transparent, #c0392b, #d4a843, #c0392b, transparent);margin:0;"></div>
+      <div class="series-box" style="border-color:#2a1414;background:#0f0a0a;">
+        <div class="series-box-top">
+          <div>
+            <div class="series-box-label" style="color:#c0392b;">Market Sentinel · Investigation Ongoing · Live Data</div>
+            <div class="series-box-title">Someone bought the market. We measured it.</div>
+            <p class="series-box-desc">A live market surveillance tool built to detect anomalous dollar volume around presidential policy announcements and social media posts. Part 1 documented the April 2025 sequence: +262% and +233% residuals in SPY and QQQ two days before the 90-day pause. Part 2 adds the first-term control group, establishing the ceiling the April 7 reading cleared by 3.5x. Part 3 delivers the options layer: QQQ call/put ratio 1.29 on April 7, call-heavy in a falling market. Part 4 examines the congressional disclosure record.</p>
+          </div>
+          <a href="market_sentinel_article.html" class="series-box-start" style="color:#c0392b;">Read Investigation →</a>
+        </div>
+        <div class="series-box-parts">
+          <a href="market_sentinel_article.html" class="series-part-link" style="color:#c0392b;">Part 1 · The April Sequence</a>
+          <a href="market-sentinel-part2.html" class="series-part-link" style="color:#c0392b;">Part 2 · The Control Group</a>
+          <a href="market-sentinel-part3.html" class="series-part-link" style="color:#c0392b;">Part 3 · The Options Layer</a>
+          <a href="market-sentinel-part4.html" class="series-part-link" style="color:#c0392b;">Part 4 · What Congress Knew</a>
+          <a href="market-sentinel-part5.html" class="series-part-link" style="color:#c0392b;">Part 5 · The Architecture of Impunity</a>
+          <a href="market-sentinel-part6.html" class="series-part-link" style="color:#c0392b;">Part 6 · The Signal Was Real</a>
+          <a href="market_sentinel_access.html" class="series-part-link" style="color:#d4a843;margin-left:auto;">Access &amp; Pricing →</a>
+        </div>
+      </div>
+
+
+      <!-- STANDALONE PIECES -->
+      <div class="series-section-label">Standalone Analysis</div>
+      <div class="standalone-grid">
+        <div class="standalone-card" onclick="location.href='three-cars-article.html'">
+          <div class="standalone-cat">Industry Analysis · EV Affordability</div>
+          <div class="standalone-title">Three Cars, One Problem</div>
+          <div class="standalone-meta"><span>Mar 2026 · 14 min</span><a href="three-cars-article.html">Read →</a></div>
+        </div>
+        <div class="standalone-card" onclick="location.href='china-survival-article.html'">
+          <div class="standalone-cat">Global Context · Trade Policy</div>
+          <div class="standalone-title">What If It Wasn't About Us?</div>
+          <div class="standalone-meta"><span>Mar 2026 · 12 min</span><a href="china-survival-article.html">Read →</a></div>
+        </div>
+        <div class="standalone-card" onclick="location.href='pfas-municipal-article.html'">
+          <div class="standalone-cat">Water Infrastructure · PFAS Policy</div>
+          <div class="standalone-title">The Filter That Has No Drain</div>
+          <div class="standalone-meta"><span>Mar 2026 · 14 min</span><a href="pfas-municipal-article.html">Read →</a></div>
+        </div>
+        <div class="standalone-card" onclick="location.href='franchise-article.html'">
+          <div class="standalone-cat">Automotive Retail · Regulation</div>
+          <div class="standalone-title">The Regulation Nobody Talks About</div>
+          <div class="standalone-meta"><span>Mar 2026 · 14 min</span><a href="franchise-article.html">Read →</a></div>
+        </div>
+        <div class="standalone-card" onclick="location.href='check-the-math-article.html'">
+          <div class="standalone-cat">Methodology · Standing Invitation</div>
+          <div class="standalone-title">Check the Math</div>
+          <div class="standalone-meta"><span>Mar 2026 · 7 min</span><a href="check-the-math-article.html">Read →</a></div>
+        </div>
+        <div class="standalone-card" onclick="location.href='subscriptions.html'">
+          <div class="standalone-cat">Automotive Retail</div>
+          <div class="standalone-title">The Car You Walked Away From</div>
+          <div class="standalone-meta"><span>Feb 2026 · 10 min</span><a href="subscriptions.html">Read →</a></div>
+        </div>
+      </div>
+
+
+    </div>
+  </section>
+
+  <!-- SUBSCRIBE -->
+  <section id="subscribe">
+    <div class="section-wrap">
+      <div class="section-header">
+        <div class="section-title">Subscribe</div>
+        <div class="section-tag">Free · Always</div>
+      </div>
+      <div class="subscribe-grid">
+        <div class="subscribe-left">
+          <h2 class="subscribe-heading">Analysis that earns<br>a seat at the <em>table.</em></h2>
+          <p class="subscribe-body">PolicyTorque delivers engineering-grounded policy analysis directly to professionals who need to understand what's actually happening in the automotive industry. OEM strategists, policy staff, journalists, and engineers who want the real numbers, not the press release version.</p>
+          <div class="subscribe-form">
+            <input type="email" id="subEmail" placeholder="your@email.com" />
+            <button onclick="handleSubscribe()">Subscribe →</button>
+          </div>
+          <div class="form-success" id="subSuccess">✓ Welcome. Watch your inbox.</div>
+        </div>
+        <div class="subscribe-right">
+          <div>
+            <div class="subscribe-proof-label">What you get</div>
+            <div class="proof-stats">
+              <div class="proof-stat">
+                <div class="proof-val">Free</div>
+                <div class="proof-label">Always, No Paywall</div>
+              </div>
+              <div class="proof-stat">
+                <div class="proof-val">0</div>
+                <div class="proof-label">Sponsored Content</div>
+              </div>
+              <div class="proof-stat">
+                <div class="proof-val">Real</div>
+                <div class="proof-label">Engineering Numbers</div>
+              </div>
+            </div>
+          </div>
+          <div class="subscribe-note">
+            No spam. No affiliate links. No advertiser influence.<br>
+            Unsubscribe at any time. Published on Beehiiv.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="section-wrap">
+      <div class="section-header">
+        <div class="section-title">About</div>
+        <div class="section-tag">Who's Writing This</div>
+      </div>
+      <div class="about-grid">
+        <div class="about-left">
+          <div class="about-initial">M</div>
+          <div>
+            <div class="about-name">Michael Russo</div>
+            <div class="about-role">Founder · PolicyTorque</div>
+          </div>
+          <div class="about-credentials">
+            <div class="cred">
+              <div class="cred-val">8+</div>
+              <div class="cred-label">Years OEM Engineering<br>Ford · GM · Stellantis</div>
+            </div>
+            <div class="cred">
+              <div class="cred-val">B.S.</div>
+              <div class="cred-label">Mechanical Engineering<br>University of Illinois Chicago · 2014</div>
+            </div>
+            <div class="cred">
+              <div class="cred-val">AE</div>
+              <div class="cred-label">Alternative Energy &amp; Fuel Cells<br>Hocking College</div>
+            </div>
+            <div class="cred">
+              <div class="cred-val">$1M+</div>
+              <div class="cred-label">Verified Cost Savings via Design<br>Optimization &amp; Supplier Negotiation</div>
+            </div>
+          </div>
+        </div>
+        <div class="about-right">
+          <p>PolicyTorque exists because the people making automotive policy and the people building automotive products rarely speak the same language.</p>
+          <p>I've spent eight years inside three of the largest OEMs in the world: <strong>Ford, GM, Stellantis</strong>, working on platforms like the F-150 and Lincoln Continental. I know what a tariff does not in the abstract, but on a specific part number, at a specific supplier, on a specific production line.</p>
+          <p>That kind of knowledge doesn't make it into think tank reports. It doesn't show up in Congressional testimony. The gap between what's happening in engineering and what's being debated in policy is enormous, and that gap is where bad decisions get made.</p>
+          <p><strong>PolicyTorque is where I close that gap.</strong> Every analysis here is grounded in engineering reality. Every policy argument is tested against manufacturing feasibility. The goal is analysis worth sharing: work that earns a seat at the table.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="section-wrap">
+      <div class="section-header">
+        <div class="section-title">Contact</div>
+        <div class="section-tag">Consulting · Media · Speaking</div>
+      </div>
+      <div class="contact-grid">
+        <div class="contact-left">
+          <h2 class="contact-heading">Get in<br><em>touch.</em></h2>
+          <p class="contact-body">Available for consulting engagements, media appearances, policy briefings, and speaking. Particularly interested in conversations at the intersection of EV policy, supply chain strategy, and the future of automotive retail.</p>
+        </div>
+        <div class="contact-right">
+          <div class="contact-items">
+            <div class="contact-item">
+              <span class="contact-label">Email</span>
+              <span class="contact-value"><a href="/cdn-cgi/l/email-protection#8ae7e3e9e2ebefe6cafae5e6e3e9f3fee5f8fbffefa4e9e5e7"><span class="__cf_email__" data-cfemail="e984808a81888c85a9998685808a909d869b989c8cc78a8684">[email&#160;protected]</span></a></span>
+            </div>
+            <div class="contact-item">
+              <span class="contact-label">Phone</span>
+              <span class="contact-value">(248) 555-0147</span>
+            </div>
+            <div class="contact-item">
+              <span class="contact-label">LinkedIn</span>
+              <span class="contact-value"><a href="https://linkedin.com/in/michael-f-russo" target="_blank">linkedin.com/in/michael-f-russo</a></span>
+            </div>
+            <div class="contact-item">
+              <span class="contact-label">Location</span>
+              <span class="contact-value">Troy, MI · Detroit Metro</span>
+            </div>
+            <div class="contact-item">
+              <span class="contact-label">Focus Areas</span>
+              <span class="contact-value" style="font-size:0.85rem;color:#888;">EV Policy · Supply Chain · OEM Strategy · Franchise Law · Subscription Models</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <a href="#" class="footer-logo">Policy<span>Torque</span></a>
+      <div class="footer-links">
+        <a href="#articles">Analysis</a>
+        <a href="#articles">Series</a>
+        <a href="https://policytorque.beehiiv.com/subscribe" target="_blank">Subscribe</a>
+        <a href="https://linkedin.com/in/michael-f-russo" target="_blank">LinkedIn</a>
+      </div>
+      <div class="footer-copy">© 2026 PolicyTorque · Detroit, MI</div>
+    </div>
+  </footer>
+
+  <script>
+    function sentinelCollapse() {
+      document.getElementById('sentinel-expanded').style.display = 'none';
+      document.getElementById('sentinel-min').style.display = 'block';
+    }
+    function sentinelExpand() {
+      document.getElementById('sentinel-min').style.display = 'none';
+      document.getElementById('sentinel-expanded').style.display = 'block';
+    }
+    function intelCollapse() {
+      document.getElementById('intel-expanded').style.display = 'none';
+      document.getElementById('intel-min').style.display = 'block';
+    }
+    function intelExpand() {
+      document.getElementById('intel-min').style.display = 'none';
+      document.getElementById('intel-expanded').style.display = 'block';
+    }
+    function civilRightsCollapse() {
+      document.getElementById('civil-rights-expanded').style.display = 'none';
+      document.getElementById('civil-rights-min').style.display = 'block';
+    }
+    function civilRightsExpand() {
+      document.getElementById('civil-rights-min').style.display = 'none';
+      document.getElementById('civil-rights-expanded').style.display = 'block';
+    }
+  </script>
+
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><
