@@ -290,6 +290,40 @@
       .rate-row { grid-template-columns: 60px 1fr auto; }
       .rate-cell.bar-cell { display: none; }
     }
+
+    /* SOURCE DOCS BAR */
+    .source-docs-bar {
+      background: #0d0d0d;
+      border-bottom: 1px solid #1e1e1e;
+    }
+    .source-docs-inner {
+      max-width: 900px; margin: 0 auto;
+      padding: 1.25rem 2.5rem;
+      display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;
+    }
+    .source-docs-label {
+      font-family: 'DM Mono', monospace; font-size: 0.52rem;
+      letter-spacing: 0.2em; text-transform: uppercase; color: #777;
+      white-space: nowrap; flex-shrink: 0;
+    }
+    .source-docs-links {
+      display: flex; gap: 0; flex-wrap: wrap;
+      border: 1px solid #2a1414;
+    }
+    .src-doc-link {
+      display: flex; align-items: center; gap: 0.5rem;
+      padding: 0.6rem 1rem; border-right: 1px solid #2a1414;
+      font-family: 'DM Mono', monospace; font-size: 0.55rem;
+      letter-spacing: 0.06em; color: #d4a843; text-decoration: none;
+      transition: background 0.15s, color 0.15s; white-space: nowrap;
+    }
+    .src-doc-link:last-child { border-right: none; }
+    .src-doc-link:hover { background: #1a0f0f; color: #f0ede8; }
+    .src-doc-icon { font-size: 0.7rem; }
+    @media (max-width: 768px) {
+      .source-docs-inner { padding: 1rem 1.25rem; }
+      .src-doc-link { font-size: 0.48rem; padding: 0.5rem 0.75rem; }
+    }
   </style>
 </head>
 <body>
@@ -319,7 +353,7 @@
       <span>May 4, 2026</span>
       <span>Michael Russo · PolicyTorque LLC</span>
       <span>Current Events Series · Part II</span>
-      <span>13 FOIAs · 2 PAC Appeals · 2 PAC Appeals · Investigation Ongoing</span>
+      <span>11 FOIAs · 4 PAC Appeals · Investigation Ongoing · Investigation Ongoing</span>
     </div>
   </div>
 </section>
@@ -344,6 +378,24 @@
     </div>
   </div>
 </div>
+
+  <!-- SOURCE DOCUMENTS -->
+  <div class="source-docs-bar">
+    <div class="source-docs-inner">
+      <div class="source-docs-label">Source Documents</div>
+      <div class="source-docs-links">
+      <a href="https://raw.githubusercontent.com/mfr1003/Chicago-Public-Safety-Data-and-Tools/main/CTA%20ENFORCEMENT%20STUDY/TIN260010468_-_Freedom_of_Information_Act_Request_--_Transit_Citation_Revenue_Collection_Records__CTA1_.xlsx" class="src-doc-link" download>
+        <span class="src-doc-icon">&#8595;</span>
+        <span class="src-doc-label">Finance Collection Records (67,046 cases)</span>
+      </a>
+      <a href="https://raw.githubusercontent.com/mfr1003/Chicago-Public-Safety-Data-and-Tools/main/CTA%20ENFORCEMENT%20STUDY/FOIA_Response_Russo_05042026.pdf" class="src-doc-link" download>
+        <span class="src-doc-icon">&#8595;</span>
+        <span class="src-doc-label">Finance FOIA Response Letter</span>
+      </a>
+      </div>
+    </div>
+  </div>
+
 
 <article class="article-body">
 
@@ -492,10 +544,11 @@
     <div class="series-nav-label">Civil Rights Series · PUBLIC Transit</div>
     <div class="series-nav-label">Current Events Series  -  CTA Investigation</div>
     <div class="series-nav-links">
-            <a href="index.html" class="series-nav-link back">← All Series</a>
+                  <a href="index.html" class="series-nav-link back">← All Series</a>
         <a href="cta-transit-enforcement.html" class="series-nav-link">Part I · $251M Out. $26,148.57 Back.</a>
-        <a href="cta-accidental-conspiracy.html" class="series-nav-link" style="background:#0f0a0a;">Part II · The Accidental Conspiracy ←</a>
+        <a href="cta-accidental-conspiracy.html" class="series-nav-link" style="background:#0f0a0a;">Part II · The Accidental Conspiracy</a>
         <a href="cta-half-billion-failure.html" class="series-nav-link">Part III · The Almost Half Billion Dollar Failure</a>
+        <a href="cta-free-of-charge.html" class="series-nav-link">Part IV · Free of Charge</a>
         <a href="cta-enforcement-audit.html" class="series-nav-link" style="color:#c0392b;">↗ Live Dashboard</a>
       </div>
   </div>

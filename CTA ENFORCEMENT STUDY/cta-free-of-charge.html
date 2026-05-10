@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Free of Charge — PolicyTorque</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700;1,900&family=DM+Mono:wght@400;500&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: #0a0a0a;
+      color: #f0ede8;
+      font-family: 'Lora', Georgia, serif;
+      font-size: 18px;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      border-bottom: 1px solid #1e1e1e;
+      background: rgba(10,10,10,0.97);
+      backdrop-filter: blur(16px);
+    }
+    .header-inner {
+      max-width: 1400px; margin: 0 auto; padding: 0 2.5rem;
+      height: 64px; display: flex; align-items: center; justify-content: space-between;
+    }
+    .logo {
+      font-family: 'Playfair Display', serif; font-weight: 900; font-size: 1.45rem;
+      color: #f0ede8; text-decoration: none; letter-spacing: -0.02em;
+    }
+    .logo span { color: #c0392b; }
+    nav { display: flex; align-items: center; gap: 2rem; }
+    nav a {
+      font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.14em;
+      text-transform: uppercase; color: #aaa; text-decoration: none; transition: color 0.2s;
+    }
+    nav a:hover { color: #f0ede8; }
+    .nav-subscribe {
+      background: #c0392b; color: #fff !important;
+      padding: 0.5rem 1.1rem; letter-spacing: 0.1em;
+    }
+    .nav-subscribe:hover { background: #a93226; }
+
+    .article-hero {
+      padding-top: 64px;
+      border-bottom: 1px solid #1e1e1e;
+      position: relative; overflow: hidden;
+    }
+    .article-hero::before {
+      content: '';
+      position: absolute; top: 64px; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, #c0392b, transparent);
+    }
+    .hero-grid-bg {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(#1e1e1e 1px, transparent 1px),
+        linear-gradient(90deg, #1e1e1e 1px, transparent 1px);
+      background-size: 80px 80px;
+      opacity: 0.2;
+      pointer-events: none;
+    }
+    .article-hero-inner {
+      max-width: 900px; margin: 0 auto; padding: 4rem 2.5rem 3.5rem;
+      position: relative; z-index: 1;
+    }
+    .article-eyebrow {
+      font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.2em;
+      text-transform: uppercase; color: #c0392b; margin-bottom: 1.5rem;
+      display: flex; align-items: center; gap: 1rem;
+    }
+    .article-eyebrow::before { content: ''; display: block; width: 32px; height: 2px; background: #c0392b; }
+    .article-title {
+      font-family: 'Playfair Display', serif; font-weight: 900;
+      font-size: clamp(3.5rem, 8vw, 7rem);
+      line-height: 0.9; letter-spacing: -0.04em;
+      color: #f0ede8; margin-bottom: 1.75rem;
+    }
+    .article-title em { font-style: italic; color: #c0392b; }
+    .article-deck {
+      font-family: 'Lora', serif; font-size: 1.15rem; color: #bbb;
+      line-height: 1.75; margin-bottom: 2.5rem;
+      border-left: 2px solid #c0392b; padding-left: 1.5rem;
+    }
+    .article-meta {
+      font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.12em;
+      text-transform: uppercase; color: #777;
+      display: flex; gap: 2rem; flex-wrap: wrap;
+      padding-top: 1.5rem; border-top: 1px solid #1e1e1e;
+    }
+    .article-meta span { color: #aaa; }
+
+    .stat-bar { background: #0d0d0d; border-bottom: 1px solid #1e1e1e; }
+    .stat-bar-inner {
+      max-width: 900px; margin: 0 auto; padding: 0 2.5rem;
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      border-left: 1px solid #1e1e1e; border-right: 1px solid #1e1e1e;
+    }
+    .stat-cell {
+      padding: 1.75rem 1.5rem; border-right: 1px solid #1e1e1e;
+      display: flex; flex-direction: column; gap: 0.35rem;
+    }
+    .stat-cell:last-child { border-right: none; }
+    .stat-val {
+      font-family: 'Playfair Display', serif; font-weight: 900;
+      font-size: 2rem; line-height: 1; letter-spacing: -0.03em; color: #f0ede8;
+    }
+    .stat-val.red { color: #c0392b; }
+    .stat-val.gold { color: #d4a843; }
+    .stat-lbl {
+      font-family: 'DM Mono', monospace; font-size: 0.52rem;
+      letter-spacing: 0.1em; text-transform: uppercase; color: #777;
+      line-height: 1.5;
+    }
+
+    .article-body {
+      max-width: 900px; margin: 0 auto; padding: 3.5rem 2.5rem 5rem;
+    }
+    .article-body p {
+      margin-bottom: 1.6rem; color: #d8d5d0; line-height: 1.8;
+    }
+    .article-body p:first-child { color: #f0ede8; font-size: 1.1rem; }
+
+    h2.section-hed {
+      font-family: 'Playfair Display', serif; font-weight: 900;
+      font-size: 1.6rem; letter-spacing: -0.025em; color: #f0ede8;
+      margin: 3.5rem 0 1.25rem; line-height: 1.2;
+    }
+    h2.section-hed em { font-style: italic; color: #c0392b; }
+
+    h3.sub-hed {
+      font-family: 'DM Mono', monospace; font-size: 0.65rem;
+      letter-spacing: 0.16em; text-transform: uppercase; color: #c0392b;
+      margin: 2.5rem 0 0.85rem;
+    }
+
+    .pull-quote {
+      margin: 2.5rem 0; padding: 2rem 2.5rem;
+      border-left: 3px solid #c0392b; background: #0f0a0a;
+    }
+    .pull-quote p {
+      font-family: 'Playfair Display', serif; font-style: italic;
+      font-size: 1.25rem; line-height: 1.5; color: #f0ede8 !important;
+      margin-bottom: 0 !important;
+    }
+
+    .doc-callout {
+      margin: 2.5rem 0;
+      border: 1px solid #2a1414; background: #0d0808;
+      padding: 2rem 2.5rem;
+    }
+    .doc-callout-label {
+      font-family: 'DM Mono', monospace; font-size: 0.52rem;
+      letter-spacing: 0.18em; text-transform: uppercase; color: #c0392b;
+      margin-bottom: 1rem;
+    }
+    .doc-callout-quote {
+      font-family: 'Lora', serif; font-style: italic;
+      font-size: 1rem; color: #d8d5d0; line-height: 1.75;
+      border-left: 2px solid #c0392b; padding-left: 1.25rem;
+      margin-bottom: 0.75rem;
+    }
+    .doc-callout-source {
+      font-family: 'DM Mono', monospace; font-size: 0.5rem;
+      letter-spacing: 0.1em; color: #777; text-transform: uppercase;
+    }
+
+    .timeline {
+      margin: 2.5rem 0;
+      border: 1px solid #1e1e1e;
+    }
+    .timeline-row {
+      display: grid; grid-template-columns: 140px 1fr;
+      border-bottom: 1px solid #1e1e1e; align-items: stretch;
+    }
+    .timeline-row:last-child { border-bottom: none; }
+    .timeline-date {
+      padding: 1rem 1.25rem;
+      font-family: 'DM Mono', monospace; font-size: 0.6rem;
+      letter-spacing: 0.06em; color: #d4a843; font-weight: 500;
+      border-right: 1px solid #1e1e1e;
+      display: flex; align-items: center;
+    }
+    .timeline-event {
+      padding: 1rem 1.25rem;
+      font-family: 'DM Mono', monospace; font-size: 0.62rem;
+      letter-spacing: 0.04em; color: #d8d5d0; line-height: 1.6;
+    }
+    .timeline-event.red { color: #c0392b; font-weight: 600; }
+    .timeline-event.green { color: #2a7a2a; }
+    .timeline-row.highlight { background: #0f0808; }
+
+    .arrest-table {
+      margin: 2.5rem 0; border: 1px solid #1e1e1e; width: 100%;
+    }
+    .arrest-row {
+      display: grid; grid-template-columns: 1fr auto auto auto;
+      border-bottom: 1px solid #1e1e11; align-items: center;
+    }
+    .arrest-row:last-child { border-bottom: none; }
+    .arrest-row.header { background: #0d0d0d; }
+    .arrest-cell {
+      padding: 0.75rem 1.25rem;
+      font-family: 'DM Mono', monospace; font-size: 0.6rem;
+      letter-spacing: 0.04em; color: #aaa;
+      border-right: 1px solid #1e1e1e;
+    }
+    .arrest-cell:last-child { border-right: none; }
+    .arrest-row.header .arrest-cell {
+      font-size: 0.52rem; letter-spacing: 0.14em;
+      text-transform: uppercase; color: #777;
+    }
+    .arrest-cell.charge { color: #d8d5d0; }
+    .arrest-cell.num { text-align: right; font-weight: 500; }
+    .arrest-cell.fare { color: #c0392b; font-weight: 600; }
+
+    .series-nav {
+      border-top: 1px solid #1e1e1e; padding-top: 3rem;
+      margin-top: 4rem;
+    }
+    .series-nav-label {
+      font-family: 'DM Mono', monospace; font-size: 0.55rem;
+      letter-spacing: 0.16em; text-transform: uppercase; color: #777;
+      margin-bottom: 1.25rem;
+    }
+    .series-nav-links { display: flex; gap: 0; border: 1px solid #1e1e1e; flex-wrap: wrap; }
+    .series-nav-link {
+      font-family: 'DM Mono', monospace; font-size: 0.6rem;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: #c0392b; text-decoration: none;
+      padding: 0.85rem 1.5rem; border-right: 1px solid #1e1e1e;
+      transition: background 0.2s, color 0.2s;
+    }
+    .series-nav-link:last-child { border-right: none; }
+    .series-nav-link:hover { background: #141414; color: #f0ede8; }
+    .series-nav-link.back { color: #aaa; }
+    .series-nav-link.back:hover { color: #f0ede8; }
+
+    footer { background: #0a0a0a; border-top: 1px solid #1e1e1e; padding: 2.5rem; }
+    .footer-inner {
+      max-width: 1400px; margin: 0 auto;
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;
+    }
+    .footer-logo {
+      font-family: 'Playfair Display', serif; font-weight: 900;
+      font-size: 1rem; color: #f0ede8; text-decoration: none;
+    }
+    .footer-logo span { color: #c0392b; }
+    .footer-links { display: flex; gap: 2rem; }
+    .footer-links a {
+      font-family: 'DM Mono', monospace; font-size: 0.55rem;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: #777; text-decoration: none; transition: color 0.2s;
+    }
+    .footer-links a:hover { color: #f0ede8; }
+    .footer-copy {
+      font-family: 'DM Mono', monospace; font-size: 0.52rem;
+      letter-spacing: 0.1em; text-transform: uppercase; color: #666;
+    }
+
+    @media (max-width: 768px) {
+      .header-inner { padding: 0 1.25rem; }
+      nav a.hide-mobile { display: none; }
+      .article-hero-inner, .article-body { padding-left: 1.25rem; padding-right: 1.25rem; }
+      .stat-bar-inner { grid-template-columns: repeat(2, 1fr); }
+      .stat-cell:nth-child(2) { border-right: none; }
+      .timeline-row { grid-template-columns: 100px 1fr; }
+      .arrest-row { grid-template-columns: 1fr auto auto; }
+      .arrest-cell:nth-child(3) { display: none; }
+    }
+
+    /* SOURCE DOCS BAR */
+    .source-docs-bar {
+      background: #0d0d0d;
+      border-bottom: 1px solid #1e1e1e;
+    }
+    .source-docs-inner {
+      max-width: 900px; margin: 0 auto;
+      padding: 1.25rem 2.5rem;
+      display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;
+    }
+    .source-docs-label {
+      font-family: 'DM Mono', monospace; font-size: 0.52rem;
+      letter-spacing: 0.2em; text-transform: uppercase; color: #777;
+      white-space: nowrap; flex-shrink: 0;
+    }
+    .source-docs-links {
+      display: flex; gap: 0; flex-wrap: wrap;
+      border: 1px solid #2a1414;
+    }
+    .src-doc-link {
+      display: flex; align-items: center; gap: 0.5rem;
+      padding: 0.6rem 1rem; border-right: 1px solid #2a1414;
+      font-family: 'DM Mono', monospace; font-size: 0.55rem;
+      letter-spacing: 0.06em; color: #d4a843; text-decoration: none;
+      transition: background 0.15s, color 0.15s; white-space: nowrap;
+    }
+    .src-doc-link:last-child { border-right: none; }
+    .src-doc-link:hover { background: #1a0f0f; color: #f0ede8; }
+    .src-doc-icon { font-size: 0.7rem; }
+    @media (max-width: 768px) {
+      .source-docs-inner { padding: 1rem 1.25rem; }
+      .src-doc-link { font-size: 0.48rem; padding: 0.5rem 0.75rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="index.html" class="logo">Policy<span>Torque</span></a>
+    <nav>
+      <a href="index.html#articles" class="hide-mobile">Analysis</a>
+      <a href="index.html#articles" class="hide-mobile">Series</a>
+      <a href="index.html#about" class="hide-mobile">About</a>
+      <a href="index.html#contact" class="hide-mobile">Contact</a>
+      <a href="https://policytorque.beehiiv.com/subscribe" target="_blank" class="nav-subscribe">Subscribe</a>
+    </nav>
+  </div>
+</header>
+
+<section class="article-hero">
+  <div class="hero-grid-bg"></div>
+  <div class="article-hero-inner">
+    <div class="article-eyebrow">Civil Rights Series · PUBLIC Transit · Part IV</div>
+    <h1 class="article-title"><em>Free</em><br>of Charge</h1>
+    <p class="article-deck">
+      The Cook County Sheriff's Office produced a signed Memorandum of Understanding today showing the CTA arranged free law enforcement coverage starting March 27, 2026. Monterrey's contract was renewed the next day. The CTA terminated Monterrey three weeks later, citing non-appropriation of funds. Section VII of the MOU states there is no exchange of funds between the parties. The funds were never needed.
+    </p>
+    <div class="article-meta">
+      <span>May 8, 2026</span>
+      <span>Michael Russo · PolicyTorque LLC</span>
+      <span>Civil Rights Series · Part IV</span>
+      <span>11 FOIAs · 4 PAC Appeals · Investigation Ongoing</span>
+    </div>
+  </div>
+</section>
+
+<div class="stat-bar">
+  <div class="stat-bar-inner">
+    <div class="stat-cell">
+      <div class="stat-val red">$0</div>
+      <div class="stat-lbl">Cost of Sheriff Pilot Program to CTA · Section VII · MOU signed March 13-16, 2026</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-val">Mar 27</div>
+      <div class="stat-lbl">Sheriff officers deployed to CTA · one day before Monterrey renewal</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-val gold">16 of 98</div>
+      <div class="stat-lbl">Sheriff arrests for fare evasion · warrants dominate at 32</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-val red">$97M</div>
+      <div class="stat-lbl">Monterrey + Inter-Con contracts replaced by free Sheriff coverage</div>
+    </div>
+  </div>
+</div>
+
+  <!-- SOURCE DOCUMENTS -->
+  <div class="source-docs-bar">
+    <div class="source-docs-inner">
+      <div class="source-docs-label">Source Documents</div>
+      <div class="source-docs-links">
+      <a href="https://raw.githubusercontent.com/mfr1003/Chicago-Public-Safety-Data-and-Tools/main/CTA%20ENFORCEMENT%20STUDY/MOU_CCSO_CTA_Signed_Redacted.pdf" class="src-doc-link" download>
+        <span class="src-doc-icon">&#8595;</span>
+        <span class="src-doc-label">CCSO-CTA MOU · Signed March 2026</span>
+      </a>
+      <a href="https://raw.githubusercontent.com/mfr1003/Chicago-Public-Safety-Data-and-Tools/main/CTA%20ENFORCEMENT%20STUDY/ODSA_Response_to_R091132-041326.pdf" class="src-doc-link" download>
+        <span class="src-doc-icon">&#8595;</span>
+        <span class="src-doc-label">Sheriff Arrest Statistics · Mar 27-Apr 30</span>
+      </a>
+      </div>
+    </div>
+  </div>
+
+
+<article class="article-body">
+
+  <p>The Cook County Sheriff's Office responded to FOIA R091132-041326 today with two documents. The first is a Memorandum of Understanding between the Cook County Sheriff's Office and the Chicago Transit Authority establishing a pilot program for law enforcement on the CTA transit system. The second is an arrest summary from that program. Together they answer a question this investigation has been asking since April 18: why did the CTA terminate the Monterrey contract three weeks after renewing it?</p>
+
+  <p>The answer, in the language of the MOU itself, is Section VII.</p>
+
+  <div class="doc-callout">
+    <div class="doc-callout-label">MOU Between CTA and Cook County Sheriff's Office · Section VII · Compensation</div>
+    <div class="doc-callout-quote">"There is no exchange of funds between the Parties of this MOU."</div>
+    <div class="doc-callout-source">Signed March 13, 2026 (CCSO) · March 16, 2026 (CTA) · Produced under FOIA R091132-041326 · May 8, 2026</div>
+  </div>
+
+  <p>The CTA did not run out of money for security. The CTA arranged free security coverage and then terminated the contract it was paying for.</p>
+
+  <h2 class="section-hed">The <em>Sequence</em></h2>
+
+  <h3 class="sub-hed">What the documents now establish</h3>
+
+  <div class="timeline">
+    <div class="timeline-row">
+      <div class="timeline-date">Mar 13-16, 2026</div>
+      <div class="timeline-event green">MOU signed between CTA and Cook County Sheriff's Office. Zero cost. Nora Leerhsen (CTA Acting President) and Nicholas Scouftas (CCSO General Counsel) sign. Kevin Ryan named as CTA representative.</div>
+    </div>
+    <div class="timeline-row highlight">
+      <div class="timeline-date">Mar 27, 2026</div>
+      <div class="timeline-event green">Sheriff Police Officers begin deploying to CTA Transit System under the Pilot Program.</div>
+    </div>
+    <div class="timeline-row highlight">
+      <div class="timeline-date">Mar 28, 2026</div>
+      <div class="timeline-event red">Monterrey Security contract renewed for one year through April 3, 2027. Affirmative renewal. Someone signed it.</div>
+    </div>
+    <div class="timeline-row">
+      <div class="timeline-date">Apr 13, 2026</div>
+      <div class="timeline-event">First FOIA request filed in this investigation.</div>
+    </div>
+    <div class="timeline-row highlight">
+      <div class="timeline-date">Apr 18, 2026</div>
+      <div class="timeline-event red">CTA terminates Monterrey contract. Kevin Ryan signs termination letter. Reason cited: non-appropriation of funds.</div>
+    </div>
+    <div class="timeline-row">
+      <div class="timeline-date">May 8, 2026</div>
+      <div class="timeline-event">CCSO produces MOU and arrest statistics under FOIA.</div>
+    </div>
+  </div>
+
+  <p>The non-appropriation of funds rationale requires the reader to believe the CTA exhausted its security budget while simultaneously operating a zero-cost law enforcement program covering the same transit system. The MOU does not explain why Monterrey was renewed on March 28 — one day after the free replacement was already operational. Those records are pending production under the board communications FOIA filed May 4, 2026, amended May 8 to include Kevin Ryan as a named custodian.</p>
+
+  <h2 class="section-hed">What the <em>Arrest Data</em> Shows</h2>
+
+  <h3 class="sub-hed">Sheriff task force activity March 27 through April 30, 2026</h3>
+
+  <p>The CCSO also produced arrest statistics covering the task force's first 35 days. The data does not support fare enforcement as the program's primary function.</p>
+
+  <div class="arrest-table">
+    <div class="arrest-row header">
+      <div class="arrest-cell">Charge Category</div>
+      <div class="arrest-cell num">Prior Week</div>
+      <div class="arrest-cell num">Month to Date</div>
+      <div class="arrest-cell num">Since Start</div>
+    </div>
+    <div class="arrest-row">
+      <div class="arrest-cell charge">Total Arrests</div>
+      <div class="arrest-cell num">16</div>
+      <div class="arrest-cell num">86</div>
+      <div class="arrest-cell num">98</div>
+    </div>
+    <div class="arrest-row">
+      <div class="arrest-cell charge">Warrant</div>
+      <div class="arrest-cell num">4</div>
+      <div class="arrest-cell num">29</div>
+      <div class="arrest-cell num">32</div>
+    </div>
+    <div class="arrest-row" style="background:#0f0808">
+      <div class="arrest-cell fare">Theft of Services (inc. Fare Evasion)</div>
+      <div class="arrest-cell num fare">2</div>
+      <div class="arrest-cell num fare">11</div>
+      <div class="arrest-cell num fare">16</div>
+    </div>
+    <div class="arrest-row">
+      <div class="arrest-cell charge">Battery</div>
+      <div class="arrest-cell num">2</div>
+      <div class="arrest-cell num">10</div>
+      <div class="arrest-cell num">11</div>
+    </div>
+    <div class="arrest-row">
+      <div class="arrest-cell charge">Civil Disobedience</div>
+      <div class="arrest-cell num">4</div>
+      <div class="arrest-cell num">12</div>
+      <div class="arrest-cell num">13</div>
+    </div>
+    <div class="arrest-row">
+      <div class="arrest-cell charge">Retail Theft</div>
+      <div class="arrest-cell num">1</div>
+      <div class="arrest-cell num">9</div>
+      <div class="arrest-cell num">9</div>
+    </div>
+    <div class="arrest-row">
+      <div class="arrest-cell charge">Drug</div>
+      <div class="arrest-cell num">0</div>
+      <div class="arrest-cell num">4</div>
+      <div class="arrest-cell num">5</div>
+    </div>
+    <div class="arrest-row">
+      <div class="arrest-cell charge">Gun Offenses</div>
+      <div class="arrest-cell num">0</div>
+      <div class="arrest-cell num">2</div>
+      <div class="arrest-cell num">3</div>
+    </div>
+  </div>
+
+  <p>Of 98 total arrests since March 27, 16 were for fare evasion or theft of services. Outstanding warrants account for 32 arrests — the single largest category. The Sheriff task force is primarily a general law enforcement operation on CTA property, not a fare enforcement program.</p>
+
+  <p>This is relevant because the private security contracts this investigation has documented — $97 million for Monterrey and Inter-Con, $144.6 million for Action K-9, $430 million in combined enforcement spending including CPD — were justified publicly as fare enforcement and rider safety investments. The zero-cost replacement is doing something different and producing different outcomes, on the same transit system, at no charge to the CTA.</p>
+
+  <h2 class="section-hed">Who <em>Signed</em> What</h2>
+
+  <h3 class="sub-hed">The named parties across the document record</h3>
+
+  <p>The MOU notices section identifies Kevin Ryan, CTA Vice President of Security, at kryan@transitchicago.com, as the named representative for the Sheriff pilot program. Kevin Ryan also signed the Monterrey termination letter. The MOU was executed by Nora Leerhsen, CTA Acting President, on March 16, 2026 — twelve days before the Monterrey contract was renewed.</p>
+
+  <p>The acting president of the CTA signed a zero-cost replacement security arrangement on March 16. Twelve days later, someone renewed the contract the replacement was designed to supersede. The board communications FOIA filed May 4 and amended May 8 to include Kevin Ryan seeks the records that would explain that sequence. Those records are due May 11.</p>
+
+  <div class="pull-quote">
+    <p>The CTA cited non-appropriation of funds to terminate a contract it had renewed one day after deploying free replacement coverage. The funds were not appropriated because they were not needed. That is not a budget problem. That is a sequence of decisions that requires explanation.</p>
+  </div>
+
+  <p>A FOIA request has been filed today seeking all biweekly summaries produced by the Sheriff under the MOU, all communications between CTA and CCSO regarding the pilot program, and any internal CTA communications referencing both the Sheriff program and the Monterrey contract. The CTA's main FOIA production is due May 11.</p>
+
+  <p>The investigation is ongoing.</p>
+
+  <p style="color:#777; font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.08em; margin-top:3rem; padding-top:1.5rem; border-top:1px solid #1e1e1e;">
+    Michael Russo is the founder of PolicyTorque LLC. He is an independent policy researcher and journalist. He has no financial interest in any entity named in this investigation. Primary source documents including the Cook County Sheriff MOU, arrest statistics, CTA board ordinances, Department of Finance collection records, Department of Administrative Hearings adjudication data, FTA Special Directive, and Office of Budget and Management appropriations records are available upon request. Contact: michael@policytorque.com · 248-930-0117
+  </p>
+
+  <div class="series-nav">
+    <div class="series-nav-label">Civil Rights Series · PUBLIC Transit</div>
+    <div class="series-nav-links">
+      <a href="index.html" class="series-nav-link back">← All Series</a>
+      <a href="cta-transit-enforcement.html" class="series-nav-link">Part I · $251M Out. $26,148.57 Back.</a>
+      <a href="cta-accidental-conspiracy.html" class="series-nav-link">Part II · The Accidental Conspiracy</a>
+      <a href="cta-half-billion-failure.html" class="series-nav-link">Part III · The Almost Half Billion Dollar Failure</a>
+      <a href="cta-free-of-charge.html" class="series-nav-link" style="background:#0f0a0a;">Part IV · Free of Charge ←</a>
+      <a href="cta-enforcement-audit.html" class="series-nav-link" style="color:#c0392b;">↗ Live Dashboard</a>
+    </div>
+  </div>
+
+</article>
+
+<footer>
+  <div class="footer-inner">
+    <a href="index.html" class="footer-logo">Policy<span>Torque</span></a>
+    <div class="footer-links">
+      <a href="index.html#articles">Analysis</a>
+      <a href="index.html#articles">Series</a>
+      <a href="https://policytorque.beehiiv.com/subscribe" target="_blank">Subscribe</a>
+      <a href="https://linkedin.com/in/michael-f-russo" target="_blank">LinkedIn</a>
+    </div>
+    <div class="footer-copy">2026 PolicyTorque · Detroit, MI</div>
+  </div>
+</footer>
+
+</body>
+</html>

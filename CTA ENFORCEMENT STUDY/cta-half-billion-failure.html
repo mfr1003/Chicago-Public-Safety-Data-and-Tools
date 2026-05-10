@@ -279,6 +279,40 @@
       .budget-row { grid-template-columns: 60px 1fr 1fr; }
       .budget-cell:nth-child(3) { display: none; }
     }
+
+    /* SOURCE DOCS BAR */
+    .source-docs-bar {
+      background: #0d0d0d;
+      border-bottom: 1px solid #1e1e1e;
+    }
+    .source-docs-inner {
+      max-width: 900px; margin: 0 auto;
+      padding: 1.25rem 2.5rem;
+      display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;
+    }
+    .source-docs-label {
+      font-family: 'DM Mono', monospace; font-size: 0.52rem;
+      letter-spacing: 0.2em; text-transform: uppercase; color: #777;
+      white-space: nowrap; flex-shrink: 0;
+    }
+    .source-docs-links {
+      display: flex; gap: 0; flex-wrap: wrap;
+      border: 1px solid #2a1414;
+    }
+    .src-doc-link {
+      display: flex; align-items: center; gap: 0.5rem;
+      padding: 0.6rem 1rem; border-right: 1px solid #2a1414;
+      font-family: 'DM Mono', monospace; font-size: 0.55rem;
+      letter-spacing: 0.06em; color: #d4a843; text-decoration: none;
+      transition: background 0.15s, color 0.15s; white-space: nowrap;
+    }
+    .src-doc-link:last-child { border-right: none; }
+    .src-doc-link:hover { background: #1a0f0f; color: #f0ede8; }
+    .src-doc-icon { font-size: 0.7rem; }
+    @media (max-width: 768px) {
+      .source-docs-inner { padding: 1rem 1.25rem; }
+      .src-doc-link { font-size: 0.48rem; padding: 0.5rem 0.75rem; }
+    }
   </style>
 </head>
 <body>
@@ -308,7 +342,7 @@
       <span>May 6, 2026</span>
       <span>Michael Russo · PolicyTorque LLC</span>
       <span>Civil Rights Series · Part III</span>
-      <span>13 FOIAs · 2 PAC Appeals · Investigation Ongoing</span>
+      <span>11 FOIAs · 4 PAC Appeals · Investigation Ongoing</span>
     </div>
   </div>
 </section>
@@ -334,9 +368,23 @@
   </div>
 </div>
 
+  <!-- SOURCE DOCUMENTS -->
+  <div class="source-docs-bar">
+    <div class="source-docs-inner">
+      <div class="source-docs-label">Source Documents</div>
+      <div class="source-docs-links">
+      <a href="https://raw.githubusercontent.com/mfr1003/Chicago-Public-Safety-Data-and-Tools/main/CTA%20ENFORCEMENT%20STUDY/F136884_Responsive_Records_R.pdf" class="src-doc-link" download>
+        <span class="src-doc-icon">&#8595;</span>
+        <span class="src-doc-label">FTA Special Directive · Dec 8, 2025 · Produced under FOIA F136884</span>
+      </a>
+      </div>
+    </div>
+  </div>
+
+
 <article class="article-body">
 
-  <p>I disagree with the Trump administration on most things. I want to say that clearly before I say what comes next: Marcus Molinaro, FTA Administrator, was not wrong. If I were sitting in his chair looking at the same data, I would have reached the same conclusion. I might have been angrier about it.</p>
+  <p>On December 8, 2025, the Federal Transit Administration issued a Special Directive to Mayor Brandon Johnson and the Chicago Transit Authority. It found the CTA had failed to maintain a safe operating environment for workers and passengers and had failed to implement adequate mitigations to address a years-long pattern of elevated assaults. CTA's violent crime rate, the FTA noted, was nearly four times the national average.</p>
 
   <p>On December 8, 2025, the FTA issued a Special Directive to Mayor Brandon Johnson and the Chicago Transit Authority. The directive found that the CTA had failed to update its Public Transportation Agency Safety Plan and had failed to maintain a safe operating environment for workers and passengers, including failing to implement adequate mitigations to address a years-long pattern of elevated assaults. CTA's violent crime rate, the FTA noted, was nearly four times the national average.</p>
 
@@ -466,12 +514,13 @@
   <div class="series-nav">
     <div class="series-nav-label">Civil Rights Series · PUBLIC Transit</div>
     <div class="series-nav-links">
-      <a href="index.html" class="series-nav-link back">← All Series</a>
-      <a href="cta-transit-enforcement.html" class="series-nav-link">Part I · $251M Out. $26,148.57 Back.</a>
-      <a href="cta-accidental-conspiracy.html" class="series-nav-link">Part II · The Accidental Conspiracy</a>
-      <a href="cta-half-billion-failure.html" class="series-nav-link" style="background:#0f0a0a;">Part III · The Almost Half Billion Dollar Failure ←</a>
-      <a href="cta-enforcement-audit.html" class="series-nav-link" style="color:#c0392b;">↗ Live Dashboard</a>
-    </div>
+            <a href="index.html" class="series-nav-link back">← All Series</a>
+        <a href="cta-transit-enforcement.html" class="series-nav-link">Part I · $251M Out. $26,148.57 Back.</a>
+        <a href="cta-accidental-conspiracy.html" class="series-nav-link">Part II · The Accidental Conspiracy</a>
+        <a href="cta-half-billion-failure.html" class="series-nav-link" style="background:#0f0a0a;">Part III · The Almost Half Billion Dollar Failure</a>
+        <a href="cta-free-of-charge.html" class="series-nav-link">Part IV · Free of Charge</a>
+        <a href="cta-enforcement-audit.html" class="series-nav-link" style="color:#c0392b;">↗ Live Dashboard</a>
+      </div>
   </div>
 
 </article>
